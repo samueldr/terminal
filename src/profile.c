@@ -2474,7 +2474,7 @@ gchar *get_profile()
 #  ifdef DETAIL
 	g_debug("! Launch get_profile()");
 #  endif
-	gchar *profile = g_strdup_printf("%s/%s", profile_dir, USER_PROFILE);
+	gchar *profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
 #  ifdef SAFEMODE
 	if (profile && (g_mkdir_with_parents(profile_dir, 0700) < 0))
 #  else

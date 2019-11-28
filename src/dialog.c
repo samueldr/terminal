@@ -2876,7 +2876,7 @@ gchar *get_colorful_profile(struct Window *win_data)
 	if (win_data->use_custom_profile)
 		profile = g_strdup_printf("%s", win_data->profile);
 	else
-		profile = g_strdup_printf("%s/%s", profile_dir, USER_PROFILE);
+		profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
 
 	// g_debug("win_data->runtime_encoding = %s", win_data->runtime_encoding);
 	// g_debug("profile = %s", profile);

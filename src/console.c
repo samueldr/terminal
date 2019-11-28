@@ -170,7 +170,7 @@ gchar *get_help_message_usage(gchar *profile, gboolean convert_to_html)
 	if (profile)
 		current_profile = g_strdup(profile);
 	else
-		current_profile = g_strdup_printf("%s/%s", profile_dir, USER_PROFILE);
+		current_profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
 #ifdef SAFEMODE
 	if (current_profile)
 	{

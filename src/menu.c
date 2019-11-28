@@ -2643,7 +2643,7 @@ void reload_settings(GtkWidget *menu_item, struct Window *win_data)
 	if (win_data->profile)
 		current_profile = g_strdup(win_data->profile);
 	else
-		current_profile = g_strdup_printf("%s/%s", profile_dir, USER_PROFILE);
+		current_profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
 
 	apply_profile_from_file(current_profile, LOAD_FROM_PROFILE);
 	g_free(current_profile);

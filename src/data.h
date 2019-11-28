@@ -117,7 +117,6 @@
 #define PROFILE BINARY ".conf"
 #define SYS_PROFILE ETCDIR "/" PROFILE
 #define REAL_ETCDIR "/etc/"
-#define USER_PROFILE "default.conf"
 #define SOCKET_DATA_VERSION PACKAGE "-0.9.9~rc6"
 #define PROFILE_FORMAT_VERSION "0.9.9.3"
 #define NOTEBOOK_GROUP 8
