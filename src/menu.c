@@ -132,7 +132,6 @@ gboolean create_menu(struct Window *win_data)
 	// The ansi theme
 	win_data->ansi_color_sub_menu = create_sub_item_subitem (_("Change ANSI color theme"), GTK_FAKE_STOCK_SELECT_COLOR);
 	gtk_menu_shell_append (GTK_MENU_SHELL (win_data->menu), win_data->ansi_color_sub_menu);
-	recreate_theme_menu_items(win_data);
 
 #if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
 	if (win_data->show_background_menu)
@@ -419,7 +418,6 @@ gboolean create_menu(struct Window *win_data)
 	win_data->menuitem_load_profile_from_list = create_sub_item_subitem (_("User profile"), GTK_FAKE_STOCK_PROPERTIES);
 	gtk_menu_shell_append (GTK_MENU_SHELL (win_data->menu), win_data->menuitem_load_profile_from_list);
 	// win_data->subitem_load_profile_from_list = create_sub_item_submenu (win_data->menu, win_data->menuitem_load_profile_from_list);
-	refresh_profile_list(win_data);
 #endif
 	if (win_data->show_exit_menu)
 	{
@@ -440,45 +438,6 @@ gboolean create_menu(struct Window *win_data)
 #endif
 
 	return TRUE;
-}
-
-void recreate_theme_menu_items(struct Window *win_data)
-{
-#ifdef DETAIL
-	g_debug("! Launch recreate_theme_menu_items() with win_data = %p", win_data);
-#endif
-#ifdef SAFEMODE
-	if (win_data==NULL) return;
-#endif
-	if (win_data->ansi_color_menuitem)
-	{
-		gtk_widget_destroy(win_data->ansi_color_menuitem);
-		// g_debug("recreate_theme_menu_items(): set win_data->current_menuitem_theme = NULL");
-		win_data->current_menuitem_theme = NULL;
-	}
-	win_data->ansi_color_menuitem = gtk_menu_new ();
-#ifdef SAFEMODE
-	if (win_data->ansi_color_sub_menu)
-#endif
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (win_data->ansi_color_sub_menu), win_data->ansi_color_menuitem);
-
-	win_data->ansi_theme_menuitem[6] = win_data->menuitem_invert_color = create_menu_item(CHECK_MENU_ITEM, win_data->ansi_color_menuitem,
-											      _("Invert color"), NULL, NULL,
-											      (GSourceFunc)invert_color_theme, win_data);
-	add_separator_menu (win_data->ansi_color_menuitem);
-
-	gint i;
-	GSList *theme_group = NULL;
-	// g_debug("win_data->color_theme_str = %s", win_data->color_theme_str);
-	for (i=0; i<THEME; i++)
-		theme_group = create_theme_menu_items(win_data, win_data->ansi_color_menuitem, theme_group, i, 0);
-	if (win_data->have_custom_color || win_data->use_custom_theme)
-	{
-		add_separator_menu (win_data->ansi_color_menuitem);
-		for (i=0; i<THEME; i++)
-			theme_group = create_theme_menu_items(win_data, win_data->ansi_color_menuitem, theme_group, i, 1);
-	}
-	gtk_widget_show_all(win_data->ansi_color_menuitem);
 }
 
 GSList *create_theme_menu_items(struct Window *win_data, GtkWidget *sub_menu, GSList *theme_group, gint current_theme, gint custom_theme)
@@ -1874,64 +1833,6 @@ FINISH:
 }
 
 #ifdef ENABLE_PROFILE
-void refresh_profile_list (struct Window *win_data)
-{
-#  ifdef DETAIL
-	g_debug("! Launch refresh_profile_list() with win_data = %p", win_data);
-#  endif
-#  ifdef SAFEMODE
-	if (win_data==NULL) return;
-#  endif
-	long new_profile_dir_modtime = get_profile_dir_modtime();
-	// g_debug("new_profile_dir_modtime = %ld", new_profile_dir_modtime);
-	if ((new_profile_dir_modtime != win_data->profile_dir_modtime) ||
-	    (new_profile_dir_modtime == -1))
-	{
-		// g_debug("Update the profile list!!!");
-		// g_debug("refresh_profile_list: win_data->subitem_new_window_from_list = %p, "
-		//	"win_data->subitem_load_profile_from_list = %p.",
-		//	win_data->subitem_new_window_from_list,
-		//	win_data->subitem_load_profile_from_list);
-		win_data->subitem_new_window_from_list =
-			recreate_profile_menu_item(win_data->menuitem_new_window_from_list,
-						   win_data->subitem_new_window_from_list,
-						   win_data, NEW_WINDOW_FROM_PROFILE);
-		win_data->subitem_load_profile_from_list =
-			recreate_profile_menu_item(win_data->menuitem_load_profile_from_list,
-						   win_data->subitem_load_profile_from_list,
-						   win_data, LOAD_FROM_PROFILE);
-		win_data->profile_dir_modtime = new_profile_dir_modtime;
-
-		// g_debug("refresh_profile_list: win_data->subitem_new_window_from_list = %p, "
-		//	"win_data->subitem_load_profile_from_list = %p.",
-		//	win_data->subitem_new_window_from_list,
-		//	win_data->subitem_load_profile_from_list);
-	}
-}
-
-GtkWidget *recreate_profile_menu_item(GtkWidget *menuitem, GtkWidget *subitem,
-				       struct Window *win_data, Apply_Profile_Type type)
-{
-#  ifdef DETAIL
-	g_debug("! Launch recreate_profile_menu_item()! with menuitem = %p, subitem = %p, win_data = %p, "
-		"type = %d", menuitem, subitem, win_data, type);
-#  endif
-#  ifdef SAFEMODE
-	if ((win_data==NULL) || (menuitem==NULL)) return NULL;
-#  endif
-	// g_debug("Trying to destroy subitem (%p)!!", subitem);
-	if (subitem) gtk_widget_destroy(subitem);
-	subitem = gtk_menu_new ();
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), subitem);
-
-	if (type == NEW_WINDOW_FROM_PROFILE)
-		create_new_window_from_menu_items(subitem, GTK_FAKE_STOCK_NEW);
-	else
-		create_load_profile_from_menu_items(subitem, GTK_FAKE_STOCK_APPLY, win_data);
-	// g_debug("SHOW ALL: %p", subitem);
-	gtk_widget_show_all(subitem);
-	return subitem;
-}
 
 void create_new_window_from_menu_items(GtkWidget *sub_menu, const gchar *stock_id)
 {
@@ -1955,20 +1856,6 @@ void create_load_profile_from_menu_items(GtkWidget *sub_menu, const gchar *stock
 #  ifdef SAFEMODE
 	if (win_data==NULL) return;
 #  endif
-	// Profile
-	//menu_item = gtk_image_menu_item_new_with_label(_("Profile sample"));
-	win_data->menuitem_auto_save = create_menu_item(CHECK_MENU_ITEM, sub_menu, _("Save settings automatically"), NULL, NULL,
-							(GSourceFunc)set_auto_save, win_data);
-
-	add_separator_menu (sub_menu);
-
-	create_menu_item (IMAGE_MENU_ITEM, sub_menu, _("Save settings"), NULL, GTK_FAKE_STOCK_SAVE,
-			  (GSourceFunc)save_user_settings, win_data);
-
-	create_menu_item (IMAGE_MENU_ITEM, sub_menu, _("Save settings as..."), NULL, GTK_FAKE_STOCK_SAVE_AS,
-			  (GSourceFunc)save_user_settings_as, win_data);
-
-	add_separator_menu (sub_menu);
 
 	// Reload Settings
 	create_menu_item (IMAGE_MENU_ITEM, sub_menu, _("Reload settings"), NULL, GTK_FAKE_STOCK_REVERT_TO_SAVED,

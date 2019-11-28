@@ -1772,9 +1772,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 						//	" dialog_data->original_use_custom_theme = %d, win_data->use_custom_theme = %d",
 						//	dialog_data->original_have_custom_color, win_data->have_custom_color,
 						//	dialog_data->original_use_custom_theme, win_data->use_custom_theme);
-						if ((dialog_data->original_have_custom_color != win_data->have_custom_color) ||
-						    (dialog_data->original_use_custom_theme != win_data->use_custom_theme))
-							recreate_theme_menu_items(win_data);
 					}
 
 					generate_all_color_datas(win_data);
@@ -2231,7 +2228,6 @@ void update_fg_bg_color(struct Window *win_data, GdkRGBA color, gboolean update_
 	if (win_data->use_custom_theme == FALSE)
 	{
 		win_data->use_custom_theme = TRUE;
-		recreate_theme_menu_items(win_data);
 	}
 }
 // the win_data->temp_index will updated to get_color_index()!!

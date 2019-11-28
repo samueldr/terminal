@@ -299,7 +299,6 @@ gchar *get_colorful_profile(struct Window *win_data);
 // **************************** menu.c ****************************
 //
 
-void recreate_theme_menu_items(struct Window *win_data);
 gboolean refresh_locale_and_encoding_list(struct Window *win_data);
 void set_encoding(GtkWidget *menuitem, gpointer user_data);
 gboolean create_menu(struct Window *win_data);
@@ -311,7 +310,6 @@ GtkWidget *add_radio_menuitem_to_sub_menu(GSList *encoding_group,
 					  const gchar *name,
 					  GSourceFunc func,
 					  gpointer func_data);
-void refresh_profile_list (struct Window *win_data);
 long get_profile_dir_modtime();
 gboolean check_if_win_data_is_still_alive(struct Window *win_data);
 void clean_scrollback_lines(GtkWidget *widget, struct Window *win_data);

@@ -102,8 +102,6 @@ void view_current_page_info(GtkWidget *widget, struct Window *win_data);
 void view_clipboard(GtkWidget *widget, struct Window *win_data);
 void view_primary(GtkWidget *widget, struct Window *win_data);
 gint add_menuitem_to_locale_sub_menu(struct Window *win_data, gint no, gchar *name);
-GtkWidget *recreate_profile_menu_item(GtkWidget *menuitem, GtkWidget *subitem,
-				       struct Window *win_data, Apply_Profile_Type type);
 void create_new_window_from_menu_items(GtkWidget *sub_menu, const gchar *stock_id);
 void create_load_profile_from_menu_items(GtkWidget *sub_menu, const gchar *stock_id, struct Window *win_data);
 gboolean create_profile_menu_list(GtkWidget *sub_menu, const gchar *stock_id, GSourceFunc func, gpointer func_data);

@@ -1349,10 +1349,6 @@ gboolean vte_button_press(GtkWidget *vte, GdkEventButton *event, struct Page *pa
 			// query done
 			win_data->checking_menu_item = FALSE;
 		}
-#ifdef ENABLE_PROFILE
-		// Update the profile list
-		refresh_profile_list(win_data);
-#endif
 		win_data->checking_menu_item = TRUE;
 #ifdef SAFEMODE
 		if (win_data->current_menuitem_theme)
