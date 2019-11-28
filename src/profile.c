@@ -1234,7 +1234,7 @@ gchar *get_user_profile_path(struct Window *win_data, int argc, char *argv[])
 	// trying to got witch profile to use
 	if (profile==NULL)
 	{
-		profile = load_profile_from_dir(ETCDIR, PROFILE);
+		profile = load_profile_from_dir(REAL_ETCDIR, PROFILE);
 	}
 	// if (profile==NULL)
 	//	g_message("Sorry, Can not find any profile. Using program defaults.");
