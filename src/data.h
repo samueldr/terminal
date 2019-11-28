@@ -1134,7 +1134,6 @@ struct Window
 
 	// If the profile is specify with -u option.
 	GtkWidget *subitem_new_window_from_list;
-	GtkWidget *menuitem_new_window_from_list;
 	GtkWidget *subitem_load_profile_from_list;
 	GtkWidget *menuitem_load_profile_from_list;
 	gboolean use_custom_profile;

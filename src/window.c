@@ -2832,7 +2832,6 @@ void dump_data (struct Window *win_data, struct Page *page_data)
 	g_debug("- win_data->init_dir = %s", win_data->init_dir);
 	g_debug("- win_data->geometry = %s", win_data->geometry);
 	g_debug("- win_data->subitem_new_window_from_list = %p", win_data->subitem_new_window_from_list);
-	g_debug("- win_data->menuitem_new_window_from_list = %p", win_data->menuitem_new_window_from_list);
 	g_debug("- win_data->subitem_load_profile_from_list = %p", win_data->subitem_load_profile_from_list);
 	g_debug("- win_data->menuitem_load_profile_from_list = %p", win_data->menuitem_load_profile_from_list);
 	g_debug("- win_data->use_custom_profile = %d", win_data->use_custom_profile);
@@ -3317,7 +3316,6 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 	// win_data->login_shell;
 	// win_data->utmp;
 	win_data->subitem_new_window_from_list = NULL;
-	win_data->menuitem_new_window_from_list = NULL;
 	win_data->subitem_load_profile_from_list = NULL;
 	win_data->menuitem_load_profile_from_list = NULL;
 

@@ -398,7 +398,6 @@ void init_window_parameters(struct Window *win_data)
 	// win_data->utmp;
 	// win_data->geometry;
 	// win_data->subitem_new_window_from_list;
-	// win_data->menuitem_new_window_from_list;
 	// win_data->subitem_load_profile_from_list;
 	// win_data->menuitem_load_profile_from_list;
 	// win_data->use_custom_profile;
