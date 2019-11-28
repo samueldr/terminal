@@ -299,7 +299,6 @@ gchar *get_colorful_profile(struct Window *win_data);
 // **************************** menu.c ****************************
 //
 
-gboolean refresh_locale_and_encoding_list(struct Window *win_data);
 void set_encoding(GtkWidget *menuitem, gpointer user_data);
 gboolean create_menu(struct Window *win_data);
 void set_urgent_bell(GtkWidget *widget, struct Window *win_data);

@@ -43,7 +43,6 @@ GdkRGBA entry_not_find_bg_color = {0, 0xffff, 0xbcbc, 0xbcbc};
 
 // EDIT_LABEL,
 // FIND_STRING,
-// ADD_NEW_LOCALES,
 // CHANGE_THE_FOREGROUND_COLOR,
 // CHANGE_THE_ANSI_COLORS,
 // CHANGE_THE_BACKGROUND_COLOR,
@@ -428,48 +427,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 
 			// <Switch> Button
 			add_secondary_button(dialog_data->window, _("Entry"), GTK_RESPONSE_OK, GTK_FAKE_STOCK_REFRESH);
-			break;
-		}
-		case ADD_NEW_LOCALES:
-		{
-			create_dialog(_("Add new locales and set the default locale"),
-				      "Add new locales and set the default locale",
-				      DIALOG_OK_CANCEL,
-				      page_data->window,
-				      FALSE,
-				      FALSE,
-				      10,
-				      GTK_RESPONSE_OK,
-				      GTK_FAKE_STOCK_DIALOG_INFO,
-				      NULL,
-				      selectable,
-				      0,
-				      TRUE,
-				      BOX_VERTICALITY,
-				      25,
-				      dialog_data);
-			// TRANSLATE NOTE: You may replace the following locales with the locale name of your country.
-			// TRANSLATE NOTE: For example, replace "zh_TW" with "ru_RU", replace "zh_TW.Big5" with "ru_RU.KOI8-R",
-			// TRANSLATE NOTE: or replace "zh_TW.UTF-8" with "ru_RU.UTF-8".
-			gchar *contents = _("The default locale used when initing a Vte Terminal.\n"
-					    "You may use \"zh_TW\", \"zh_TW.Big5\", or \"zh_TW.UTF-8\" here.");
-			dialog_data->operate[0] = create_entry_widget (dialog_data->box,
-								  contents,
-								  _("Default locale:"),
-								  win_data->default_locale,
-								  TRUE);
-
-			// TRANSLATE NOTE: You may replace the following locales with the locale name of your country.
-			// TRANSLATE NOTE: For example, replace "zh_TW" with "ja_JP", replace "zh_TW.Big5" with "ja_JP.EUC-JP",
-			// TRANSLATE NOTE: and replace "zh_TW.UTF-8" with "ja_JP.UTF-8".
-			contents = _("The locales list on right click menu, separate with <space>.\n"
-				     "You may use \"zh_TW\", \"zh_TW.Big5\", or \"zh_TW.UTF-8\" here.\n"
-				     "You may want to use \"UTF-8\" here if you have no locale data installed.");
-			dialog_data->operate[1] = create_entry_widget (dialog_data->box,
-								  contents,
-								  _("Locales list:"),
-								  win_data->locales_list,
-								  TRUE);
 			break;
 		}
 #if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
@@ -1532,22 +1489,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 					get_and_update_page_name(page_data, FALSE);
 
 					break;
-				case ADD_NEW_LOCALES:
-				{
-					const gchar *text = gtk_entry_get_text(GTK_ENTRY(dialog_data->operate[0]));
-					g_free(win_data->default_locale);
-					win_data->default_locale = g_strdup(text);
-
-					text = gtk_entry_get_text(GTK_ENTRY(dialog_data->operate[1]));
-					g_free(win_data->locales_list);
-					win_data->locales_list = g_strdup(text);
-
-					gtk_widget_destroy(dialog_data->window);
-					dialog_data->window = NULL;
-
-					refresh_locale_and_encoding_list(win_data);
-					break;
-				}
 #if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
 				// style  2: change the saturation of background
 				case CHANGE_BACKGROUND_SATURATION:

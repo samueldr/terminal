@@ -3293,7 +3293,6 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 	if (win_data_orig->warned_locale_list)
 #endif
 		win_data->warned_locale_list = g_string_new(win_data_orig->warned_locale_list->str);
-	for (i=0; i<3; i++) win_data->encoding_locale_menuitems[i] = NULL;
 	win_data->default_encoding = g_strdup(win_data_orig->default_encoding);
 	win_data->encoding_sub_menu = NULL;
 	// win_data->default_menuitem_encoding;

@@ -1062,7 +1062,6 @@ struct Window
 	// Try to avoid the warning "The locale xx_XX seems NOT supported by your system!" too many times.
 	GString *warned_locale_list;
 
-	GtkWidget *encoding_locale_menuitems[3];
 	// the runtime_encoding is got from get_encoding_from_locale()
 	gchar *runtime_encoding;
 	// the default_encoding is got from 'default locale' in profile
