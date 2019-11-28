@@ -2074,9 +2074,6 @@ void get_prime_user_settings(GKeyFile *keyfile, struct Window *win_data, gchar *
 	if (win_data->prime_user_settings_inited) return;
 	win_data->prime_user_settings_inited = TRUE;
 
-	// Check the profile version
-	check_profile_version (keyfile, win_data);
-
 	// Check if confirm_to_execute_command
 	win_data->confirm_to_execute_command = check_boolean_value(keyfile, "main", "confirm_to_execute_command",
 								   win_data->confirm_to_execute_command);
@@ -3148,60 +3145,6 @@ FINISH:
 	win_data->use_rgba = -2;
 	win_data->dim_window = FALSE;
 //	g_debug("init_rgba() finished!");
-}
-#endif
-
-#ifdef ENABLE_PROFILE
-void check_profile_version (GKeyFile *keyfile, struct Window *win_data)
-{
-#  ifdef DETAIL
-	g_debug("! Launch check_profile_version() with win_data = %p", win_data);
-#  endif
-#  ifdef SAFEMODE
-	if ((keyfile==NULL) || (win_data==NULL)) return;
-#  endif
-	GtkWidget *window = NULL;
-	if (win_data) window = win_data->window;
-
-	// if (win_data->checked_profile_version)
-	if (checked_profile_version) return;
-	// Check the profile version
-	gchar *profile_version = check_string_value(keyfile, "main", "version", "", FALSE, DISABLE_EMPTY_STR);
-	// g_debug("PROFILE_FORMAT_VERSION = %s, and profile_version = %s",
-	//	PROFILE_FORMAT_VERSION,
-	//	profile_version);
-
-#  ifdef SAFEMODE
-	if (profile_version && (profile_version[0] != '\0') &&
-	    (compare_strings(PROFILE_FORMAT_VERSION, profile_version, TRUE)))
-#  else
-	if ((profile_version[0] != '\0') &&
-	    (compare_strings(PROFILE_FORMAT_VERSION, profile_version, TRUE)))
-#  endif
-	{
-		gchar *temp_str[3] = {NULL};
-		temp_str[0] = g_strdup(_("Some entry in profile is added, removed, "
-					 "or changed in this version.\n"
-					 "Please use [Save settings] on the right click menu "
-					 "to save your settings,\n"
-					 "and edit it manually if necessary.\n"));
-		temp_str[1] = get_colorful_profile(win_data);
-		temp_str[2] = g_strdup_printf(_("%s\nYour profile is %s."),
-						 temp_str[0], temp_str[1]);
-		error_dialog(window,
-			     _("The format of your profile is out of date"),
-			     "The format of your profile is out of date",
-			     GTK_FAKE_STOCK_DIALOG_INFO,
-			     temp_str[2],
-			     NULL);
-		gint i;
-		for (i=0; i<3; i++)
-			g_free(temp_str[i]);
-#  if !defined(DEBUG) && !defined(DETAIL) && !defined(FULL)
-		checked_profile_version = TRUE;
-#  endif
-	}
-	g_free(profile_version);
 }
 #endif
 
