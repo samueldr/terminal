@@ -56,13 +56,6 @@ gboolean create_menu(struct Window *win_data)
 	//	enable_vte_cjk_width, g_getenv("VTE_CJK_WIDTH"));
 	win_data->menu = gtk_menu_new();
 
-#ifdef ENABLE_PROFILE
-	win_data->menuitem_new_window_from_list = create_sub_item_subitem (_("New window with specified profile"), GTK_FAKE_STOCK_NEW);
-	// g_debug("Trying to append win_data->menuitem_new_window_from_list(%p) to win_data->menu(%p) for win_data = %p",
-	//	win_data->menuitem_new_window_from_list, win_data->menu, win_data);
-	gtk_menu_shell_append (GTK_MENU_SHELL (win_data->menu), win_data->menuitem_new_window_from_list);
-	// win_data->subitem_new_window_from_list = create_sub_item_submenu (win_data->menu, win_data->menuitem_new_window_from_list);
-#endif
 	// ----------------------------------------
 	add_separator_menu (win_data->menu);
 
@@ -219,12 +212,6 @@ gboolean create_menu(struct Window *win_data)
 	// clean scrollback lines
 	create_menu_item (IMAGE_MENU_ITEM, win_data->menu, _("Clean scrollback lines"), NULL, GTK_FAKE_STOCK_CLEAR,
 			  (GSourceFunc)clean_scrollback_lines, win_data);
-
-	win_data->menuitem_new_window_from_list = create_sub_item_subitem (_("New window with specified profile"), GTK_STOCK_NEW);
-	// g_debug("Trying to append win_data->menuitem_new_window_from_list(%p) to win_data->menu(%p) for win_data = %p",
-	//	win_data->menuitem_new_window_from_list, win_data->menu, win_data);
-	gtk_menu_shell_append (GTK_MENU_SHELL (win_data->menu), win_data->menuitem_new_window_from_list);
-	// win_data->subitem_new_window_from_list = create_sub_item_submenu (win_data->menu, win_data->menuitem_new_window_from_list);
 
 	// ----------------------------------------
 	add_separator_menu (win_data->menu);
