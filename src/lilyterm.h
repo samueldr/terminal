@@ -300,18 +300,11 @@ gchar *get_colorful_profile(struct Window *win_data);
 //
 
 void set_encoding(GtkWidget *menuitem, gpointer user_data);
-gboolean create_menu(struct Window *win_data);
 void set_urgent_bell(GtkWidget *widget, struct Window *win_data);
 void set_vte_urgent_bell(struct Window *win_data, struct Page *page_data);
 gboolean stop_urgency_hint(GtkWidget *window, GdkEvent  *event, struct Window *win_data);
-GtkWidget *add_radio_menuitem_to_sub_menu(GSList *encoding_group,
-					  GtkWidget *sub_menu,
-					  const gchar *name,
-					  GSourceFunc func,
-					  gpointer func_data);
 long get_profile_dir_modtime();
 gboolean check_if_win_data_is_still_alive(struct Window *win_data);
-void clean_scrollback_lines(GtkWidget *widget, struct Window *win_data);
 
 #if defined(FATAL) || defined(UNIT_TEST)
 void print_active_window_is_null_error_dialog(gchar *function);

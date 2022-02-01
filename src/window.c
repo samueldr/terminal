@@ -464,17 +464,6 @@ GtkNotebook *new_window(int argc,
 	// FIXME: I don't think we should call window_resizable() over and over.
 	// window_resizable(win_data->window, win_data->current_vte, 1, 1);
 
-	// g_debug("create menu!!");
-	// input method menu can't not be shown before window is shown.
-	if (create_menu(win_data) == FALSE) return NULL;
-
-	//if (page_data_orig!=NULL)
-	//{
-	//	// fix the color data after menu had been created.
-	//	// g_debug("Launch get_and_update_page_name() in new_window()!");
-	//	get_and_update_page_name(page_data_orig);
-	//}
-
 	// fullscreen!
 #ifdef USE_GTK2_GEOMETRY_METHOD
 	if (win_data->startup_fullscreen)
@@ -1532,9 +1521,6 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 			upgrade_dialog(ENABLE_MOUSE_SCROLL_VER);
 			break;
 #endif
-		case KEY_CLEAN_SCROLLBACK_LINES:
-			clean_scrollback_lines(NULL, win_data);
-			break;
 		case KEY_DISABLE_URL_L:
 		case KEY_DISABLE_URL_R:
 			if (win_data->disable_url_when_ctrl_pressed)
