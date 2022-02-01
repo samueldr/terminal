@@ -618,8 +618,6 @@
 	#define vte_terminal_spawn_sync(a,b,c,d,e,f,g,h,i,j,k) vte_terminal_fork_command_full(a,b,c,d,e,f,g,h,i,k)
 	// END: vte-0.36.3/src/vte.h: void vte_terminal_set_word_chars()
 	#define ENABLE_SET_WORD_CHARS
-	// END: vte-0.37.0/src/vteterminal.h: void vte_terminal_set_emulation()
-	#define ENABLE_SET_EMULATION
 	// END: vte-0.36.3/src/vte.h void vte_terminal_match_clear_all()
 	#define vte_terminal_match_remove_all vte_terminal_match_clear_all
 	// END: vte-0.36.3/src/vte-private.h: GtkBorder inner_border;

@@ -2068,9 +2068,6 @@ void clear_win_data(struct Window *win_data)
 	g_free(win_data->runtime_locale_list);
 	g_free(win_data->locales_list);
 	g_free(win_data->default_shell);
-#ifdef ENABLE_SET_EMULATION
-	g_free(win_data->emulate_term);
-#endif
 	g_free(win_data->VTE_CJK_WIDTH_STR);
 	g_free(win_data->wmclass_name);
 	g_free(win_data->wmclass_class);
@@ -2819,9 +2816,6 @@ void dump_data (struct Window *win_data, struct Page *page_data)
 	g_debug("- win_data->runtime_locale_list = %s", win_data->runtime_locale_list);
 	g_debug("- win_data->locales_list = %s", win_data->locales_list);
 	g_debug("- win_data->default_shell = %s", win_data->default_shell);
-#ifdef ENABLE_SET_EMULATION
-	g_debug("- win_data->emulate_term = %s", win_data->emulate_term);
-#endif
 	g_debug("- win_data->VTE_CJK_WIDTH = %d", win_data->VTE_CJK_WIDTH);
 	g_debug("- win_data->VTE_CJK_WIDTH_STR = %s", win_data->VTE_CJK_WIDTH_STR);
 	g_debug("- win_data->wmclass_name = %s", win_data->wmclass_name);
@@ -3313,9 +3307,6 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 	win_data->locale_sub_menu = NULL;
 
 	win_data->default_shell = g_strdup(win_data_orig->default_shell);
-#ifdef ENABLE_SET_EMULATION
-	win_data->emulate_term = g_strdup(win_data_orig->emulate_term);
-#endif
 	// win_data->VTE_CJK_WIDTH;
 	win_data->VTE_CJK_WIDTH_STR = g_strdup(win_data_orig->VTE_CJK_WIDTH_STR);
 	// g_debug("win_data->shell = %s, win_data_orig->shell = %s", win_data->shell, win_data_orig->shell);

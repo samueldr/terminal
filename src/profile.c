@@ -386,9 +386,6 @@ void init_window_parameters(struct Window *win_data)
 	// win_data->supported_locales;
 	// win_data->locale_sub_menu
 	// win_data->default_shell;
-#ifdef ENABLE_SET_EMULATION
-	win_data->emulate_term = g_strdup("xterm");
-#endif
 	win_data->VTE_CJK_WIDTH = 1;
 	// win_data->VTE_CJK_WIDTH_STR;
 	// win_data->argc;
@@ -1569,10 +1566,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 				g_free(win_data->shell);
 				win_data->shell = g_strdup(win_data->default_shell);
 			}
-#  ifdef ENABLE_SET_EMULATION
-			win_data->emulate_term = check_string_value( keyfile, "main", "emulate_term",
-								     win_data->emulate_term, TRUE, DISABLE_EMPTY_STR);
-#  endif
 			win_data->VTE_CJK_WIDTH = check_integer_value( keyfile, "main", "VTE_CJK_WIDTH",
 								       win_data->VTE_CJK_WIDTH,
 								       DISABLE_EMPTY_STR, 0,
@@ -2751,12 +2744,6 @@ GString *save_user_settings(GtkWidget *widget, struct Window *win_data)
 	else
 		g_string_append(contents,
 					"default_shell = \n\n");
-#  ifdef ENABLE_SET_EMULATION
-	g_string_append_printf(contents,"# Sets what type of terminal attempts to emulate.\n"
-					"# It will also set the TERM environment.\n"
-					"# Unless you are interested in this feature, always use \"xterm\".\n"
-					"emulate_term = %s\n\n", win_data->emulate_term);
-#  endif
 	g_string_append_printf(contents,"# The environment 'VTE_CJK_WIDTH' used when initing a vte terminal.\n"
 					"# 0: get via environment; 1: use narrow ideograph; 2: use wide ideograph.\n"
 					"VTE_CJK_WIDTH = %d\n\n", win_data->VTE_CJK_WIDTH);

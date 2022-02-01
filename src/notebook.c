@@ -153,16 +153,7 @@ struct Page *add_page(struct Window *win_data,
 #else
 	if (environ_str->len)
 #endif
-		environ_str = g_string_append(environ_str, "\t");
 
-#ifdef ENABLE_SET_EMULATION
-#  ifdef SAFEMODE
-	if (win_data->emulate_term == NULL)
-		g_string_append_printf (environ_str, "TERM=xterm");
-	else
-#  endif
-		g_string_append_printf (environ_str, "TERM=%s", win_data->emulate_term);
-#endif
 	// set colorterm
 	g_string_append_printf (environ_str, "\tCOLORTERM=lilyterm");
 

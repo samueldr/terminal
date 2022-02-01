@@ -200,9 +200,6 @@ void init_new_page(struct Window *win_data,
 #ifdef ENABLE_CURSOR_SHAPE
 	vte_terminal_set_cursor_shape(VTE_TERMINAL(page_data->vte), win_data->cursor_shape);
 #endif
-#ifdef ENABLE_SET_EMULATION
-	vte_terminal_set_emulation (VTE_TERMINAL(page_data->vte), win_data->emulate_term);
-#endif
 }
 
 
@@ -919,10 +916,6 @@ void apply_new_win_data_to_page (struct Window *win_data_orig,
 #ifdef ENABLE_CURSOR_SHAPE
 	if (win_data_orig->cursor_shape != win_data->cursor_shape)
 		vte_terminal_set_cursor_shape(VTE_TERMINAL(page_data->vte), win_data->cursor_shape);
-#endif
-#ifdef ENABLE_SET_EMULATION
-	if (compare_strings(win_data_orig->emulate_term, win_data->emulate_term, TRUE))
-		vte_terminal_set_emulation (VTE_TERMINAL(page_data->vte), win_data->emulate_term);
 #endif
 }
 
