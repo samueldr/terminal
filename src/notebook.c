@@ -154,6 +154,9 @@ struct Page *add_page(struct Window *win_data,
 	if (environ_str->len)
 #endif
 
+	// Set a basic TERM
+	g_string_append_printf (environ_str, "\tTERM=xterm-256color");
+
 	// set colorterm
 	g_string_append_printf (environ_str, "\tCOLORTERM=lilyterm");
 
