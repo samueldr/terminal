@@ -38,7 +38,7 @@ else
 fi
 AM_CONDITIONAL([DEFAULT_APPS_DEFINITION],[test -n "$DEFAULTAPPS_DIR"])
 
-AC_DEFINE([BINARY], ["$_BINARY"], "The binary file name of LilyTerm.")
+AC_DEFINE([BINARY], ["$_BINARY"], "The binary file name of Terminal.")
 AC_DEFINE([ISSUES], ["$_ISSUES"], "The web site for reporting issues.")
 AC_DEFINE([YEAR], ["$_YEAR"], "The current year.")
 AC_DEFINE([AUTHOR], ["$_AUTHOR"], "The author's name.")

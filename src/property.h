@@ -31,7 +31,7 @@
 // for access()
 #include <unistd.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 #if defined(USE_GTK3_GEOMETRY_METHOD) || defined(UNIT_TEST)
 void get_hint_min_size(GtkWidget *notebook, GtkWidget *scrollbar, gint *min_width, gint *min_height);
 #endif

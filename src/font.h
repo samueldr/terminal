@@ -20,7 +20,7 @@
 #include <gtk/gtk.h>
 #include <vte/vte.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 gchar *get_resize_font(GtkWidget *vte, Font_Name_Type type);
 void reset_vte_size(GtkWidget *vte, gchar *new_font_name, Font_Reset_Type type);

@@ -51,7 +51,7 @@ if [ $? != 0 ]; then
   pkg-config --cflags vte-2.91 > /dev/null 2>&1
   if [ $? = 0 ]; then
     sed -i 's/^PKG_CHECK_MODULES(vte, \[vte >= .*/PKG_CHECK_MODULES(vte, [vte-2.91 >= 0.38.0],, AC_MSG_ERROR([You need libvte-2.91 >= 0.38.0 to build $_PACKAGE]))/g' configure.ac
-    sed -i 's/^lilyterm_LDADD\(.*\)$/lilyterm_LDADD\1 -lX11/g' src/Makefile.am
+    sed -i 's/^terminal_LDADD\(.*\)$/terminal_LDADD\1 -lX11/g' src/Makefile.am
   else
     sed -i 's/^PKG_CHECK_MODULES(vte, \[vte >= .*/PKG_CHECK_MODULES(vte, [vte-2.90 >= 0.30.0],, AC_MSG_ERROR([You need libvte-2.90 >= 0.30.0 to build $_PACKAGE]))/g' configure.ac
   fi

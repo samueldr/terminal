@@ -28,6 +28,6 @@
 // for strcmp()
 #include <string.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 gchar *get_help_message(gchar *profile);

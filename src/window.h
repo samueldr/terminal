@@ -41,7 +41,7 @@
 // for GDK_WINDOW_XID
 // #include <gdk/gdkx.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 #ifdef USE_XPARSEGEOMETRY
 	// for XParseGeometry()

@@ -27,7 +27,7 @@
 #include <unistd.h>
 // for stat()
 #include <sys/stat.h>
-#include "lilyterm.h"
+#include "terminal.h"
 
 gboolean check_cmdline (struct Page *page_data, pid_t check_tpgid);
 gboolean check_window_title (struct Page *page_data, gboolean lost_focus);

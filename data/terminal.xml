@@ -3,9 +3,9 @@
 <default-apps>
   <terminals>
     <terminal>
-      <name>LilyTerm</name>
-      <executable>lilyterm</executable>
-      <command>lilyterm %s</command>
+      <name>Terminal</name>
+      <executable>terminal</executable>
+      <command>terminal %s</command>
       <icon-name>terminal</icon-name>
       <exec-flag>-e</exec-flag>
     </terminal>

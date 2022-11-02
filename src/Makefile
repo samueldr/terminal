@@ -1,26 +1,26 @@
-# This is a sample Makefile for debuging LilyTerm.
+# This is a sample Makefile for debuging Terminal.
 #
 # Usage:
-#	make clean: delete lilyterm binary files.
-#	make debug: compile lilyeterm_dbg with CLAGS -g.
-#	make dev: compile lilyeterm_dev with CLAGS -g.
-#	make vdev: compile lilyeterm_dev with full compiling command message.
-#	make ddev: compile lilyeterm_dev with -DSAFEMODE compile option.
+#	make clean: delete terminal binary files.
+#	make debug: compile terminal_dbg with CLAGS -g.
+#	make dev: compile terminal_dev with CLAGS -g.
+#	make vdev: compile terminal_dev with full compiling command message.
+#	make ddev: compile terminal_dev with -DSAFEMODE compile option.
 #	make ut: run a tiny unit testing script with gdb debug information.
 #	make uto: build *.o binary files for using in the unit testing programs.
 #	make utb: build the the unit testing programs only.
 #	make utd: run a tiny unit testing script with full runtime debug information.
 #	make utf: run a tiny unit testing script with glib, gtk, gdb and valgrind debug information.
-#	make geometry: compile lilyeterm_dev with geometry debug information.
-#	make pagename: compile lilyeterm_dev with pagename debug information.
-#	make detail: compile lilyeterm_dev with detail runtime debug information.
-#	make full: compile lilyeterm_dev with full runtime debug information.
-#	make memory: compile lilyeterm_dev for memory lack testing.
+#	make geometry: compile terminal_dev with geometry debug information.
+#	make pagename: compile terminal_dev with pagename debug information.
+#	make detail: compile terminal_dev with detail runtime debug information.
+#	make full: compile terminal_dev with full runtime debug information.
+#	make memory: compile terminal_dev for memory lack testing.
 #	make data: compile po and $(BINARY).conf files.
 #
 # grep 'g_debug *( *" *[^\!@+\?-]' * | grep -v '\/\/'
 # (\(console\|dialog\|font\|main\|menu\|misc\|notebook\|pagename\|profile\|property\|window\|socket\).c:[0-9]*)
-# MANWIDTH=80 man data/lilyterm.1 | col -b > README
+# MANWIDTH=80 man data/terminal.1 | col -b > README
 
 include ../.default
 -include ../.config

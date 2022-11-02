@@ -33,7 +33,7 @@
 // for XParseGeometry()
 #include <X11/Xlib.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 #define DEFAULT_FOREGROUND_COLOR "white"
 #define DEFAULT_BACKGROUND_COLOR "black"

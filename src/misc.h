@@ -28,6 +28,6 @@
 #include <locale.h>
 #include <glib/gi18n.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 gboolean check_if_proc_dir_exist(gchar *proc_dir);

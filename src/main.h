@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 // the max size of saddr.sun_path in Linux is 108!
 #define UNIX_PATH_MAX 108

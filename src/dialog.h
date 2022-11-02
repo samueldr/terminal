@@ -26,7 +26,7 @@
 // for aoti()
 #include <stdlib.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 typedef enum {
 	DIALOG_OK,

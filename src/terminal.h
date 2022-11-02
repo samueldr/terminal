@@ -18,8 +18,8 @@
  */
 
 
-#ifndef LILYTERM_H
-#define LILYTERM_H
+#ifndef TERMINAL_H
+#define TERMINAL_H
 
 #include "data.h"
 #include "socket.h"

@@ -30,7 +30,7 @@
 // for GDK_WINDOW_XID
 // #include <gdk/gdkx.h>
 
-#include "lilyterm.h"
+#include "terminal.h"
 
 gchar **get_argv(struct Window *win_data, gboolean *argv_need_be_free);
 void create_utf8_child_process_failed_dialog (struct Window *win_data, gchar *message, gchar *encoding);

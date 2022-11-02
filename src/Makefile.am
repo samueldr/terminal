@@ -1,9 +1,9 @@
 INCLUDES = -DICONDIR=\"$(datadir)/pixmaps\" -DETCDIR=\"$(sysconfdir)/xdg\"
 
 bin_PROGRAMS = $_BINARY
-lilyterm_CFLAGS  = $(GTK_CFLAGS) $(vte_CFLAGS)
-lilyterm_LDADD   = $(GTK_LIBS) $(vte_LIBS) $(INTLLIBS)
-lilyterm_SOURCES = data.h lilyterm.h \
+terminal_CFLAGS  = $(GTK_CFLAGS) $(vte_CFLAGS)
+terminal_LDADD   = $(GTK_LIBS) $(vte_LIBS) $(INTLLIBS)
+terminal_SOURCES = data.h terminal.h \
 		   socket.h socket.c \
 		   misc.h misc.c \
 		   console.h console.c \
