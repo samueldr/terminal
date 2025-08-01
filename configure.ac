@@ -49,6 +49,10 @@ AC_DEFINE([WIKI], ["$_WIKI"], "The wiki site.")
 AC_DEFINE([IRC], ["$_IRC"], "The irc channel.")
 AC_DEFINE([BUGREPORT], ["$_BUGREPORT"], "The author's email address.")
 
+AC_CONFIG_MACRO_DIRS([m4])
+AM_GNU_GETTEXT_VERSION([0.25])
+AM_GNU_GETTEXT([external])
+
 AC_PROG_INTLTOOL
 ALL_LINGUAS="$_LANG_LIST"
 GETTEXT_PACKAGE="$_BINARY"
