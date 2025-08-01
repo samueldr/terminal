@@ -56,12 +56,3 @@ if [ $? != 0 ]; then
     sed -i 's/^PKG_CHECK_MODULES(vte, \[vte >= .*/PKG_CHECK_MODULES(vte, [vte-2.90 >= 0.30.0],, AC_MSG_ERROR([You need libvte-2.90 >= 0.30.0 to build $_PACKAGE]))/g' configure.ac
   fi
 fi
-
-set -x
-
-aclocal
-autoheader
-intltoolize --automake --copy --force
-automake --add-missing --copy
-autoconf
-
