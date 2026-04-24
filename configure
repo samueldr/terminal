@@ -16,7 +16,7 @@ if [ "$UNAME" = "FreeBSD" -o "$UNAME" = "OpenBSD" -o "$UNAME" = "NetBSD" ]; then
 	BSD=1
 fi
 
-GTK=gtk+-2.0
+GTK=gtk+-3.0
 
 VERBOSITY=N
 DEBUG=N
@@ -171,13 +171,6 @@ for opt do
     --sysconfdir=*)
       ETCDIR=`$ECHO $opt | cut -d '=' -f 2`
       ;;
-    --with-gtk=2.0)
-      GTK_SPC=1
-      ;;
-#    --with-gtk=3.0)
-#      GTK=gtk+-3.0
-#      GTK_SPC=1
-#      ;;
     --enable-nls)
       NLS_SPC=1
       ;;
@@ -219,11 +212,7 @@ fi
 
 # ---- GTK ---- #
 
-if [ "$GTK" = "gtk+-2.0" ]; then
-  CHECK_MESSAGE 'GTK+2'
-else
-  CHECK_MESSAGE 'GTK+3'
-fi
+CHECK_MESSAGE 'GTK+3'
 
 $PKGCONFIG --cflags $GTK > /dev/null 2>&1
 if [ $? != 0 ]; then
