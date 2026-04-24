@@ -111,11 +111,6 @@ int main( int   argc,
 	if (wmclass_class==NULL) wmclass_class = "";
 	// g_debug("Got wmclass_name = %s, wmclass_class = %s", wmclass_name, wmclass_class);
 
-	// init the gtk+2 engine
-
-	// GTK3: get gtk_test_widget_click() working...
-	// gdk_disable_multidevice();
-
 #ifndef UNIT_TEST
 	gtk_init(&argc, &argv);
 #endif
