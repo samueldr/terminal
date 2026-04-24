@@ -1,7 +1,6 @@
 BUG:
 
 the dialog of find text behavior strange.
-recheck the geometry of gtk2.
 the text of running command is wrapped?
 
 GtkWidget in unit test...
