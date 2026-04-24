@@ -1354,10 +1354,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 									CHECK_MIN, 0, CHECK_MAX, 1);
 			// g_debug("Got win_data->window_opacity_inactive = %1.3f", win_data->window_opacity_inactive);
 #  endif
-#  ifdef USE_GTK2_GEOMETRY_METHOD
-			win_data->startup_fullscreen = check_boolean_value(keyfile, "main", "fullscreen",
-									   win_data->fullscreen);
-#  endif
 #  ifdef USE_GTK3_GEOMETRY_METHOD
 			gboolean fullscreen = check_boolean_value(keyfile, "main", "fullscreen", win_data->window_status);
 			if (fullscreen) win_data->window_status = WINDOW_START_WITH_FULL_SCREEN;

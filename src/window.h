@@ -53,10 +53,6 @@ char **set_process_data (pid_t entry_pid, gint *ppid, StrAddr **cmd);
 gboolean window_key_press(GtkWidget *widget, GdkEventKey *event, struct Window *win_data);
 gboolean window_key_release(GtkWidget *widget, GdkEventKey *event, struct Window *win_data);
 void window_style_set(GtkWidget *window, GtkStyle *previous_style, struct Window *win_data);
-#if defined(USE_GTK2_GEOMETRY_METHOD) || defined(UNIT_TEST)
-void window_size_request(GtkWidget *window, GtkRequisition *requisition, struct Window *win_data);
-gboolean window_state_event(GtkWidget *widget, GdkEventWindowState *event, struct Window *win_data);
-#endif
 #if defined(USE_GTK3_GEOMETRY_METHOD) || defined(UNIT_TEST)
 gboolean idle_show_or_hide_tabs_bar_and_scroll_bar(struct Window *win_data);
 gboolean idle_gtk_window_fullscreen(struct Window *win_data);

@@ -417,11 +417,6 @@ struct Page *add_page(struct Window *win_data,
 #ifdef HAVE_GTK_LABEL_SET_ELLIPSIZE
 	gtk_label_set_ellipsize(GTK_LABEL(page_data->label_text), PANGO_ELLIPSIZE_MIDDLE);
 #endif
-#ifdef USE_GTK2_GEOMETRY_METHOD
-	// when dragging the tab on a vte, or dragging a vte to itself, may change the size of vte.
-	g_signal_connect(G_OBJECT(page_data->label_text), "size_request",
-				 G_CALLBACK(label_size_request), page_data);
-#endif
 	page_data->label_button = gtk_button_new();
 	set_widget_thickness(page_data->label_button, 0);
 	GtkWidget *image = gtk_image_new_from_stock(GTK_FAKE_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
@@ -769,45 +764,12 @@ void clear_arg(struct Window *win_data)
 	win_data->argv = NULL;
 }
 
-#if defined (USE_GTK2_GEOMETRY_METHOD) || defined(UNIT_TEST)
-void label_size_request (GtkWidget *label, GtkRequisition *requisition, struct Page *page_data)
-{
-#  ifdef DETAIL
-	g_debug("! Launch label_size_request() with page_data = %p", page_data);
-#  endif
-#  ifdef SAFEMODE
-	if ((page_data==NULL) || (page_data->window==NULL)) return;
-#  endif
-	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-#  ifdef SAFEMODE
-	if (win_data==NULL) return;
-#  endif
-	// g_debug("label_size_request(): launch keep_window_size()!");
-
-#  ifdef GEOMETRY
-	g_debug("@ label_size_request(for %p): Call keep_gtk2_window_size() with keep_vte_size = 0x%X",
-		win_data->window, win_data->keep_vte_size);
-#  endif
-	keep_gtk2_window_size (win_data, page_data->vte, GEOMETRY_UPDATE_PAGE_NAME);
-}
-#endif
-
 #if defined(GEOMETRY) || defined(UNIT_TEST)
 void vte_size_allocate (GtkWidget *vte, GtkAllocation *allocation, struct Page *page_data)
 {
 #  ifdef DETAIL
 	g_debug("! Launch vte_size_allocate() with vte = %p, page_data = %p", vte, page_data);
 #  endif
-#if defined (USE_GTK2_GEOMETRY_METHOD) && defined (GEOMETRY)
-	glong column = vte_terminal_get_column_count(VTE_TERMINAL(vte));
-	glong row = vte_terminal_get_row_count(VTE_TERMINAL(vte));
-	if ((column < 80) || (row < 24))
-	{
-		struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-		fprintf(stderr, "\033[1;31m!! vte_size_allocate(window %p)(vte %p): the allocated size is %ld x %ld\033[0m\n",
-			win_data->window, vte, column, row);
-	}
-#endif
 #ifdef USE_GTK3_GEOMETRY_METHOD
 	// fprintf(stderr, "\033[1;36m** vte_size_allocate(): the allocated size is %d x %d (%ldx%ld)\033[0m\n",
 	//	allocation->width, allocation->height,

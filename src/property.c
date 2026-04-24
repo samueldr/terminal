@@ -152,13 +152,8 @@ void init_new_page(struct Window *win_data,
 		vte_terminal_set_size(VTE_TERMINAL(page_data->vte), column, row);
 
 #ifdef GEOMETRY
-#  ifdef USE_GTK2_GEOMETRY_METHOD
-	g_debug("@ init_new_page(for %p, vte = %p): Set win_data->keep_vte_size to 0x%X, and column = %ld, row = %ld",
-		win_data->window, page_data->vte, win_data->keep_vte_size, column, row);
-#  else
 	g_debug("@ init_new_page(for %p, vte = %p): Set column = %ld, row = %ld",
 		win_data->window, page_data->vte, column, row);
-#  endif
 #endif
 
 	set_vte_color(page_data->vte, use_default_vte_theme(win_data), win_data->custom_cursor_color, win_data->cursor_color,
@@ -402,9 +397,6 @@ gboolean check_show_or_hide_scroll_bar(struct Window *win_data)
 	switch (win_data->show_scroll_bar)
 	{
 		case AUTOMATIC:
-#ifdef USE_GTK2_GEOMETRY_METHOD
-			show = ! win_data->true_fullscreen;
-#endif
 #ifdef USE_GTK3_GEOMETRY_METHOD
 			switch (win_data->window_status)
 			{
@@ -638,10 +630,6 @@ void window_resizable(GtkWidget *window, GtkWidget *vte, Hints_Type hints_type)
 		fprintf(stderr, "\033[1;37m** window_resizable(win_data %p): window = %p, vte = %p, hints_type = %d\033[0m\n",
 			win_data, window, vte, hints_type);
 #  endif
-#endif
-#ifdef USE_GTK2_GEOMETRY_METHOD
-		hints.min_width = hints.base_width + hints.width_inc;
-		hints.min_height = hints.base_height + hints.height_inc;
 #endif
 	// }
 #ifdef GEOMETRY

@@ -114,9 +114,6 @@ GtkNotebook *new_window(int argc,
 			struct Window *win_data_orig,
 			struct Page *page_data_orig);
 gchar *get_init_dir(pid_t pid, gchar *pwd, gchar *home);
-#if defined(USE_GTK2_GEOMETRY_METHOD) || defined(UNIT_TEST)
-void keep_gtk2_window_size (struct Window *win_data, GtkWidget *vte, Geometry_Resize_Type keep_vte_size);
-#endif
 #if defined(USE_GTK3_GEOMETRY_METHOD) || defined(UNIT_TEST)
 void keep_gtk3_window_size(struct Window *win_data, gboolean idle);
 gboolean show_or_hide_tabs_bar_and_scroll_bar(struct Window *win_data);

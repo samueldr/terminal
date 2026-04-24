@@ -284,11 +284,6 @@
 #endif
 #if GTK_CHECK_VERSION(2,91,5)
 	#define USE_GTK3_GEOMETRY_METHOD
-#else
-	#define USE_GTK2_GEOMETRY_METHOD
-#  ifdef UNIT_TEST
-	#define gtk_window_resize_to_geometry gtk_window_move
-#  endif
 #endif
 #if GTK_CHECK_VERSION(2,3,2) && ( ! GTK_CHECK_VERSION(2,91,6))
 	// SINCE: gtk+-2.3.2/gdk/gdkspawn.h: gdk_spawn_on_screen_with_pipes()
@@ -806,71 +801,6 @@ typedef enum {
 	ANSI_THEME_SET_ANSI_THEME,
 } Set_ANSI_Theme_Type;
 
-#if defined(USE_GTK2_GEOMETRY_METHOD) || defined(UNIT_TEST)
-typedef enum {
-	FULLSCREEN_UNFS_OK =  2,
-	FULLSCREEN_UNFS_ING = 1,
-	FULLSCREEN_NORMAL =   0,
-	FULLSCREEN_FS_ING =  -1,
-	FULLSCREEN_FS_OK =   -2,
-} FullScreen_Type;
-
-typedef enum {
-	// RESIZING : Means that the Window is resizing.
-	// ONCE :     Trying to resize 'ONCE'. setted to 0 after resized.
-	// TWICE:     Trying to resize 'TWICE'. setted to 0 after resized.
-
-	GEOMETRY_NONE					=      0,
-	// 0000 0000 0000 0yx1 (0x0007): Updating Page Name. It should run window_size_request() twice.
-	GEOMETRY_UPDATE_PAGE_NAME_RESIZING		=    0x1,
-	GEOMETRY_UPDATE_PAGE_NAME_ONCE			=    0x2,
-	GEOMETRY_UPDATE_PAGE_NAME_TWICE			=    0x4,
-	GEOMETRY_UPDATE_PAGE_NAME			= GEOMETRY_UPDATE_PAGE_NAME_RESIZING | GEOMETRY_UPDATE_PAGE_NAME_ONCE |
-							  GEOMETRY_UPDATE_PAGE_NAME_TWICE,
-	GEOMETRY_UPDATE_PAGE_NAME_MASK			= 0xFFFF ^ GEOMETRY_UPDATE_PAGE_NAME,
-
-	// 0000 0000 0yx1 0000 (0x0070): Changing Themes. It should run window_size_request() twice.
-	GEOMETRY_CHANGING_THEME_RESIZING		=   0x10,
-	GEOMETRY_CHANGING_THEME_ONCE			=   0x20,
-	GEOMETRY_CHANGING_THEME_TWICE			=   0x40,
-	GEOMETRY_CHANGING_THEME				= GEOMETRY_CHANGING_THEME_RESIZING | GEOMETRY_CHANGING_THEME_ONCE |
-							  GEOMETRY_CHANGING_THEME_TWICE,
-
-	// 0000 0yx1 0000 0000 (0x0700): Hide/Show scroll_bar It should run window_size_request() twice.
-	GEOMETRY_SHOW_HIDE_SCROLL_BAR_RESIZING		=  0x100,
-	GEOMETRY_SHOW_HIDE_SCROLL_BAR_ONCE		=  0x200,
-	GEOMETRY_SHOW_HIDE_SCROLL_BAR_TWICE		=  0x400,
-	GEOMETRY_SHOW_HIDE_SCROLL_BAR			= GEOMETRY_SHOW_HIDE_SCROLL_BAR_RESIZING | GEOMETRY_SHOW_HIDE_SCROLL_BAR_ONCE |
-							  GEOMETRY_SHOW_HIDE_SCROLL_BAR_TWICE,
-
-	// 00x1 0000 0000 0000 (0x3000): Showing/Hiding tabs bar, It should only run window_size_request() once.
-	GEOMETRY_SHOW_HIDE_TAB_BAR_RESIZING		= 0x1000,
-	GEOMETRY_SHOW_HIDE_TAB_BAR_ONCE			= 0x2000,
-	GEOMETRY_SHOW_HIDE_TAB_BAR			= GEOMETRY_SHOW_HIDE_TAB_BAR_RESIZING | GEOMETRY_SHOW_HIDE_TAB_BAR_ONCE,
-
-	// x100 0000 0000 0000 (0xC000): Change the vte font, It should only run window_size_request() once.
-	GEOMETRY_CHANGING_FONT_RESIZING			= 0x4000,
-	GEOMETRY_CHANGING_FONT_ONCE			= 0x8000,
-	GEOMETRY_CHANGING_FONT				= GEOMETRY_CHANGING_FONT_RESIZING | GEOMETRY_CHANGING_FONT_ONCE,
-
-	// 1010 0010 0010 0010 (0xA222): Only check x, Means that it needs resize.
-	GEOMETRY_NEEDS_RUN_SIZE_REQUEST_MASK		= GEOMETRY_UPDATE_PAGE_NAME_ONCE | GEOMETRY_CHANGING_THEME_ONCE |
-							  GEOMETRY_SHOW_HIDE_SCROLL_BAR_ONCE |
-							  GEOMETRY_SHOW_HIDE_TAB_BAR_ONCE | GEOMETRY_CHANGING_FONT_ONCE,
-
-	// 0000 0100 0100 0100 (0x0444): Only check y, Means that it needs resize twice.
-	GEOMETRY_NEEDS_RUN_SIZE_REQUEST_AGAIN_MASK	= GEOMETRY_UPDATE_PAGE_NAME_TWICE | GEOMETRY_CHANGING_THEME_TWICE |
-							  GEOMETRY_SHOW_HIDE_SCROLL_BAR_TWICE,
-
-	// 1111 0011 0011 0011 (0xF333): Clean y, Means that it is resized once.
-	GEOMETRY_HAD_BEEN_RESIZED_ONCE_MASK		= GEOMETRY_UPDATE_PAGE_NAME_RESIZING | GEOMETRY_UPDATE_PAGE_NAME_ONCE |
-							  GEOMETRY_CHANGING_THEME_RESIZING | GEOMETRY_CHANGING_THEME_ONCE |
-							  GEOMETRY_SHOW_HIDE_SCROLL_BAR_RESIZING | GEOMETRY_SHOW_HIDE_SCROLL_BAR_ONCE |
-							  GEOMETRY_SHOW_HIDE_TAB_BAR_RESIZING | GEOMETRY_SHOW_HIDE_TAB_BAR_ONCE |
-							  GEOMETRY_CHANGING_FONT_RESIZING | GEOMETRY_CHANGING_FONT_ONCE,
-} Geometry_Resize_Type;
-#endif
-
 typedef enum {
 	HINTS_FONT_BASE,
 	HINTS_NONE,
@@ -1145,24 +1075,6 @@ struct Window
 
 // ---- the component of a single window ---- //
 
-#if defined(USE_GTK2_GEOMETRY_METHOD) || defined(UNIT_TEST)
-	// Startup with fullscreen
-	gboolean startup_fullscreen;
-	gboolean fullscreen;
-	// true_fullscreen = <Alt><Enter>
-	gboolean true_fullscreen;
-	// 0: No work
-	// 1: Normal
-	// 2: Force ON
-	// 3: Force OFF
-	// gboolean fullscreen_show_scroll_bar;
-	//  0: Normal
-	// >0: unfullscreening
-	// <0: fullscreening
-#endif
-#ifdef USE_GTK2_GEOMETRY_METHOD
-	FullScreen_Type window_status;
-#endif
 #ifdef USE_GTK3_GEOMETRY_METHOD
 	Window_Status window_status;
 #endif
