@@ -119,7 +119,7 @@ void keep_gtk2_window_size (struct Window *win_data, GtkWidget *vte, Geometry_Re
 #endif
 #if defined(USE_GTK3_GEOMETRY_METHOD) || defined(UNIT_TEST)
 void keep_gtk3_window_size(struct Window *win_data, gboolean idle);
-gboolean show_or_hide_tabs_bar_and_scroll_bar();
+gboolean show_or_hide_tabs_bar_and_scroll_bar(struct Window *win_data);
 gboolean idle_set_vte_font_to_selected(struct Window *win_data);
 #endif
 void dim_window(struct Window *win_data, gint dim_window);
