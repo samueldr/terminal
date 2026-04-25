@@ -895,9 +895,6 @@ gchar *get_tab_name_with_cmdline(struct Page *page_data)
 		if (page_data->pid_cmdline == NULL) vte_fork_cmdline_returned_empty = TRUE;
 	}
 
-#ifdef OUT_OF_MEMORY
-	return NULL;
-#endif
 	if (page_data->current_tpgid>0)
 	{
 		gchar *tpgid_cmdline = get_cmdline(page_data->current_tpgid);

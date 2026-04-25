@@ -413,18 +413,11 @@ gchar *get_encoding_from_locale(const gchar *locale)
 #ifdef DETAIL
 	g_debug("! Launch get_encoding_from_locale() with locale = %s", locale);
 #endif
-#ifdef OUT_OF_MEMORY
-#  undef g_strdup
-#endif
 	// locale==NULL: get the init encoding.
 
 	G_CONST_RETURN char *locale_encoding = NULL;
 	if (setlocale(LC_CTYPE, locale)) g_get_charset(&locale_encoding);
 	return g_strdup(locale_encoding);
-
-#ifdef OUT_OF_MEMORY
-	#define g_strdup fake_g_strdup
-#endif
 }
 
 gboolean check_string_in_array(gchar *str, gchar **lists)
@@ -485,7 +478,7 @@ gchar *get_proc_data(pid_t pid, gchar *file, gsize *length)
 	gchar *file_path = g_strdup_printf("%s/%s", proc_path, file);
 	// g_debug("file_path = %s", file_path);
 
-#if defined(OUT_OF_MEMORY) || defined(UNIT_TEST)
+#if defined(UNIT_TEST)
 	if (proc_path && file_path)
 	{
 #endif
@@ -541,7 +534,7 @@ gchar *get_proc_data(pid_t pid, gchar *file, gsize *length)
 				break;
 			}
 		}
-#if defined(OUT_OF_MEMORY) || defined(UNIT_TEST)
+#if defined(UNIT_TEST)
 	}
 #endif
 	g_free(file_path);
@@ -855,9 +848,6 @@ gboolean dirty_gdk_color_parse(const gchar *spec, GdkRGBA *color)
 	if (spec==NULL) return FALSE;
 
 	gchar *new_spec = g_strdup(spec);
-#ifdef OUT_OF_MEMORY
-	if (new_spec==NULL) return FALSE;
-#endif
 	new_spec = g_strstrip(new_spec);
 	gboolean response = gdk_rgba_parse(color, new_spec);
 	g_free(new_spec);
@@ -892,7 +882,7 @@ GtkWidget *dirty_gtk_hbox_new(gboolean homogeneous, gint spacing)
 	return box;
 }
 
-#if defined(OUT_OF_MEMORY) || defined(UNIT_TEST)
+#if defined(UNIT_TEST)
 gchar *fake_g_strdup(const gchar *str)
 {
 #  ifdef DETAIL

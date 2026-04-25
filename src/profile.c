@@ -1268,12 +1268,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 #  ifdef SAFEMODE
 	if (win_data==NULL) return;
 #  endif
-#  ifdef OUT_OF_MEMORY
-#    undef g_strdup
-#    undef g_strdup_printf
-#    undef g_strsplit
-#    undef g_strsplit_set
-#  endif
 
 	// g_debug("Get win_data = %d when get user settings!", win_data);
 
@@ -1995,14 +1989,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 		win_data->profile = win_data->specified_profile;
 		win_data->specified_profile = NULL;
 	}
-
-#ifdef OUT_OF_MEMORY
-	#define g_strdup fake_g_strdup
-	#define g_strdup_printf(...) NULL
-	#define g_strsplit fake_g_strsplit
-	#define g_strsplit_set(x,y,z) NULL
-#endif
-
 }
 
 void init_prime_user_datas(struct Window *win_data)

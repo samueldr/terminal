@@ -208,12 +208,6 @@ unit_test_full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DDEB
 unit_test_full: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-glib-debugger --enable-gtk-debugger --enable-gdb --enable-valgrind
 
-.PHONY: memory
-memory: CFLAGS = -Wall -Wformat -Wformat-security -Werror=format-security -O2
-memory: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DOUT_OF_MEMORY -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
-memory: BINARY := $(BINARY)_dev
-memory: $(BINARY)
-
 .PHONY: clean
 clean:
 	-@ for FileName in $(BINARY) $(BINARY)_dev $(BINARY)_dbg $(OBJ) unit_test unit_test.[co] gdb_batch gdb.log valgrind.log vgcore.*; \

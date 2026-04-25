@@ -67,7 +67,7 @@ GtkWidget *dirty_gtk_hbox_new(gboolean homogeneous, gint spacing);
 void widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation, gchar *name);
 #endif
 
-#if defined(OUT_OF_MEMORY) || defined(UNIT_TEST)
+#if defined(UNIT_TEST)
 gchar *fake_g_strdup(const gchar *gchar);
 gchar *fake_g_strdup_printf(const StrLists *format, ...);
 #endif

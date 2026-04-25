@@ -69,15 +69,9 @@ int main( int   argc,
 	g_message("Running %s without SAFE MODE!", PACKAGE);
 #endif
 
-#ifdef OUT_OF_MEMORY
-#  undef g_strdup_printf
-#endif
 #ifdef ENABLE_PROFILE
 	const gchar *user_config_dir = g_get_user_config_dir();
 	if (user_config_dir) profile_dir = g_strdup_printf("%s/%s", user_config_dir, BINARY);
-#endif
-#ifdef OUT_OF_MEMORY
-	#define g_strdup_printf(...) NULL
 #endif
 	proc_exist = check_if_default_proc_dir_exist(NULL);
 
@@ -542,9 +536,6 @@ gchar *get_locale_list()
 #ifdef DETAIL
 	g_debug("! Launch get_locale_list()!");
 #endif
-#ifdef OUT_OF_MEMORY
-#  undef g_getenv
-#endif
 	return join_strings_to_string(' ',
 				      14,
 				      g_getenv("LANG"),
@@ -561,7 +552,4 @@ gchar *get_locale_list()
 				      g_getenv("LC_MEASUREMENT"),
 				      g_getenv("LC_IDENTIFICATION"),
 				      g_getenv("LC_ALL"));
-#ifdef OUT_OF_MEMORY
-	#define g_getenv(x) NULL
-#endif
 }
