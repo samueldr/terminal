@@ -108,7 +108,7 @@ endif
 ifneq ($(SAFEMODE), N)
 default: CFLAGS += -DSAFEMODE
 else
-default: CFLAGS += -DREALMODE
+$(error No "REALMODE" anymore...)
 endif
 default: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DVERSION=\"$(VERSION)\ \($(date)\)\"
 ifeq ($(DEBUG), Y)
@@ -118,7 +118,7 @@ default: $(BINARY)
 
 .PHONY: debug
 debug: CFLAGS := $(CFLAGS) -g
-debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Debug\ Version\ \($(date)\)\"
+debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Debug\ Version\ \($(date)\)\"
 debug: BINARY := $(BINARY)_dbg
 debug: $(BINARY)
 
@@ -127,7 +127,7 @@ dev: develop
 .PHONY: develop
 # develop: CFLAGS := -pedantic -pipe -fno-common -W -Wall -Wcast-align -Wformat=2 -Wpointer-arith -Wundef -Waggregate-return -Wcast-qual -Wmissing-declarations -Wnested-externs -Wstrict-prototypes -O3 -g
 develop: CFLAGS := $(CFLAGS) -g
-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 develop: BINARY := $(BINARY)_dev
 develop: $(BINARY)
 
@@ -147,25 +147,25 @@ defensive-develop: $(BINARY)
 
 .PHONY: detail
 detail: CFLAGS := $(CFLAGS) -g
-detail: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+detail: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 detail: BINARY := $(BINARY)_dev
 detail: $(BINARY)
 
 .PHONY: full
 full: CFLAGS = -Wall -Werror -Wformat -Wformat-security -Werror=format-security -Os -g
-full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 full: BINARY := $(BINARY)_dev
 full: $(BINARY)
 
 .PHONY: geometry
 geometry: CFLAGS := $(CFLAGS) -g
-geometry: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+geometry: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 geometry: BINARY := $(BINARY)_dev
 geometry: $(BINARY)
 
 .PHONY: pagename
 pagename: CFLAGS := $(CFLAGS) -g
-pagename: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DPAGENAME -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+pagename: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 pagename: BINARY := $(BINARY)_dev
 pagename: $(BINARY)
 

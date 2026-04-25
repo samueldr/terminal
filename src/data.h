@@ -31,13 +31,7 @@
 # include "config.h"
 #endif
 
-#ifdef REALMODE
-	#undef SAFEMODE
-#else
-	#ifndef SAFEMODE
-		#define SAFEMODE
-	#endif
-#endif
+#define SAFEMODE
 
 //
 // **************************** data.h ****************************
