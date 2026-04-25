@@ -895,32 +895,6 @@ GtkWidget *dirty_gtk_hbox_new(gboolean homogeneous, gint spacing)
 	return box;
 }
 
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND) || defined(UNIT_TEST)
-void dirty_vte_terminal_set_background_tint_color(VteTerminal *vte, const GdkRGBA rgba)
-{
-#  ifdef DETAIL
-	g_debug("! Launch dirty_vte_terminal_set_background_tint_color() with vte = %p", vte);
-#  endif
-#  ifdef SAFEMODE
-	if (vte==NULL) return;
-#  endif
-#  ifdef FORCE_ENABLE_VTE_BACKGROUND
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
-#  endif
-#  ifdef USE_GDK_RGBA
-#    ifndef USE_FAKE_FUNCTIONS
-	GdkColor color = convert_rgba_to_color(rgba);
-#    endif
-	vte_terminal_set_background_tint_color(VTE_TERMINAL(vte), &(color));
-#  else
-	vte_terminal_set_background_tint_color(VTE_TERMINAL(vte), &(rgba));
-#  endif
-#  ifdef FORCE_ENABLE_VTE_BACKGROUND
-	G_GNUC_END_IGNORE_DEPRECATIONS;
-#  endif
-}
-#endif
-
 #if defined(OUT_OF_MEMORY) || defined(UNIT_TEST)
 gchar *fake_g_strdup(const gchar *str)
 {

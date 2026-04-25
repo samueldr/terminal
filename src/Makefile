@@ -121,7 +121,7 @@ default: $(BINARY)
 
 .PHONY: debug
 debug: CFLAGS := $(CFLAGS) -g
-debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DFORCE_ENABLE_VTE_BACKGROUND -DVERSION=\"$(VERSION)\ Debug\ Version\ \($(date)\)\"
+debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Debug\ Version\ \($(date)\)\"
 debug: BINARY := $(BINARY)_dbg
 debug: $(BINARY)
 
@@ -130,7 +130,7 @@ dev: develop
 .PHONY: develop
 # develop: CFLAGS := -pedantic -pipe -fno-common -W -Wall -Wcast-align -Wformat=2 -Wpointer-arith -Wundef -Waggregate-return -Wcast-qual -Wmissing-declarations -Wnested-externs -Wstrict-prototypes -O3 -g
 develop: CFLAGS := $(CFLAGS) -g
-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DFORCE_ENABLE_VTE_BACKGROUND -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DREALMODE -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 develop: BINARY := $(BINARY)_dev
 develop: $(BINARY)
 

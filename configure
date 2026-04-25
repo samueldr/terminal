@@ -22,7 +22,6 @@ VERBOSITY=N
 DEBUG=N
 NLS=Y
 SAFEMODE=Y
-BACKGROUND=N
 STRIP=N
 GNOME_CONTROL_CENTER=Y
 
@@ -132,7 +131,6 @@ if [ "$1" = "-h" -o "$1" = "--help" -o "$1" = "-help" ]; then
   $ECHO "  `INFO '--enable-debug'`      : enable debug mode `NORMAL '[default: disable]'`"
   $ECHO "  `INFO '--disable-nls'`       : disable Native Language Support `NORMAL '[default: enable]'`"
   $ECHO "  `INFO '--disable-safe-mode'` : disable run in safe mode `NORMAL '[default: enable]'`"
-  $ECHO "  `INFO '--enable-background'` : enable background for vte > 0.34.8 `NORMAL '[default: disable]'`"
   $ECHO ""
   $ECHO "run \``IMPORTANT 'make clean'`' to clean $PACKAGE builded files."
   $ECHO "run \``IMPORTANT 'make distclean'`' to clean $PACKAGE builded and configure files."
@@ -179,9 +177,6 @@ for opt do
       ;;
     --disable-safe-mode)
       SAFEMODE=N
-      ;;
-    --enable-background)
-      BACKGROUND=Y
       ;;
     --enable-strip)
       STRIP=Y
@@ -302,16 +297,6 @@ else
   INFO "[OK]\n"
 fi
 
-$PKGCONFIG --exists "$VTE < 0.34.8" > /dev/null 2>&1
-if [ $? = 0 ]; then
-  BACKGROUND=N
-fi
-
-$PKGCONFIG --exists "$VTE >= 0.38.0" > /dev/null 2>&1
-if [ $? = 0 ]; then
-  BACKGROUND=N
-fi
-
 # ---- NLS ---- #
 
 if [ "$NLS" = 'Y' ]; then
@@ -375,9 +360,6 @@ if [ "$SAFEMODE" = 'N' ]; then
 else
   $ECHO "  SAFEMODE   = $SAFEMODE"
 fi
-if [ "$BACKGROUND" = 'Y' ]; then
-  IMPORTANT "  BACKGROUND = $BACKGROUND\n"
-fi
 if [ "$STRIP" = 'Y' ]; then
   IMPORTANT "  STRIP      = $STRIP\n"
 fi
@@ -440,7 +422,6 @@ $ECHO "VERBOSITY = $VERBOSITY" >> .config
 $ECHO "DEBUG = $DEBUG" >> .config
 $ECHO "NLS = $NLS" >> .config
 $ECHO "SAFEMODE = $SAFEMODE" >> .config
-$ECHO "FORCE_ENABLE_VTE_BACKGROUND = $BACKGROUND" >> .config
 $ECHO "STRIP = $STRIP" >> .config
 $ECHO "CC = $CC" >> .config
 $ECHO "CPPFLAGS = $CPPFLAGS" >> .config

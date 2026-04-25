@@ -1821,9 +1821,6 @@ void clear_win_data(struct Window *win_data)
 #ifdef ENABLE_SET_WORD_CHARS
 	g_free(win_data->word_chars);
 #endif
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-	g_free(win_data->background_image);
-#endif
 	g_free(win_data->executable_command_whitelist);
 	// g_debug("win_data->executable_command_whitelist for win_data (%p) freed!", win_data);
 	g_strfreev(win_data->executable_command_whitelists);
@@ -2597,12 +2594,6 @@ void dump_data (struct Window *win_data, struct Page *page_data)
 #endif
 	g_debug("- win_data->show_scroll_bar = %d", win_data->show_scroll_bar);
 	g_debug("- win_data->scroll_bar_position = %d", win_data->scroll_bar_position);
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-	g_debug("- win_data->transparent_background = %d", win_data->transparent_background);
-	g_debug("- win_data->background_saturation = %1.3f", win_data->background_saturation);
-	g_debug("- win_data->scroll_background = %d", win_data->scroll_background);
-	g_debug("- win_data->background_image = %s", win_data->background_image);
-#endif
 //	g_debug("- win_data->use_scrollback_lines = %d", win_data->use_scrollback_lines);
 	g_debug("- win_data->scrollback_lines = %d", win_data->scrollback_lines);
 	g_debug("- win_data->dim_text = %d", win_data->dim_text);
@@ -3067,12 +3058,6 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 #endif
 	// win_data->show_scroll_bar;
 	// win_data->scroll_bar_position;
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-	// win_data->transparent_background;
-	// win_data->background_saturation;
-	// win_data->scroll_background;
-	win_data->background_image = g_strdup(win_data_orig->background_image);
-#endif
 	// win_data->scrollback_lines;
 	// win_data->dim_text;
 	// win_data->dim_window;

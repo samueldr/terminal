@@ -553,12 +553,6 @@ void init_window_parameters(struct Window *win_data)
 	// 0: left
 	// 1: right
 	win_data->scroll_bar_position = 1;
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-	win_data->transparent_background = 2;
-	win_data->background_saturation = 0.15;
-	// win_data->scroll_background = 0;
-	win_data->background_image = g_strdup(NULL_DEVICE);
-#endif
 	win_data->scrollback_lines = SCROLL_HISTORY;
 	win_data->dim_text = TRUE;
 #ifdef USE_NEW_VTE_CURSOR_BLINKS_MODE
@@ -1358,21 +1352,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 			gboolean fullscreen = check_boolean_value(keyfile, "main", "fullscreen", win_data->window_status);
 			if (fullscreen) win_data->window_status = WINDOW_START_WITH_FULL_SCREEN;
 #  endif
-#  if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-			win_data->transparent_background = check_integer_value(keyfile, "main", "transparent_background",
-							win_data->transparent_background, DISABLE_EMPTY_STR, 0, ENABLE_ZERO, CHECK_MIN, 0, CHECK_MAX, 2);
-
-			win_data->background_saturation = check_double_value(keyfile, "main", "background_saturation",
-									     win_data->background_saturation,
-									     DISABLE_EMPTY_STR, 0,
-									     CHECK_MIN, 0, CHECK_MAX, 1);
-
-			win_data->scroll_background = check_boolean_value(keyfile, "main", "scroll_background",
-									  win_data->scroll_background);
-
-			win_data->background_image = check_string_value(keyfile, "main", "background_image",
-									win_data->background_image, TRUE, DISABLE_EMPTY_STR);
-#  endif
 			win_data->running_process_whitelist = check_string_value(keyfile, "main",
 										    "running_process_whitelist",
 										    win_data->running_process_whitelist,
@@ -1982,12 +1961,6 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 	}
 	if (win_data->transparent_window==2)
 		win_data->transparent_window = (win_data->use_rgba==-1)? 1: 0;
-#  if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-	if (win_data->transparent_background==2)
-		win_data->transparent_background = (win_data->use_rgba==-1)? 1 :0;
-	// g_debug("win_data->transparent_window = %d", win_data->transparent_window);
-	// g_debug("win_data->transparent_background = %d", win_data->transparent_background);
-#  endif
 	set_window_opacity (NULL, 0, win_data->window_opacity, win_data);
 #endif
 

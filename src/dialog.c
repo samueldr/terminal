@@ -429,39 +429,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 			add_secondary_button(dialog_data->window, _("Entry"), GTK_RESPONSE_OK, GTK_FAKE_STOCK_REFRESH);
 			break;
 		}
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-		case CHANGE_BACKGROUND_SATURATION:				// 2
-		{
-			create_dialog(_("Change the saturation of background"),
-				      "Change the saturation of background",
-				      DIALOG_OK_CANCEL,
-				      page_data->window,
-				      FALSE,
-				      TRUE,
-				      10,
-				      GTK_RESPONSE_OK,
-				      GTK_FAKE_STOCK_DIALOG_INFO,
-				      _("Change the Saturation of background:"),
-				      selectable,
-				      0,
-				      TRUE,
-				      BOX_VERTICALITY,
-				      0,
-				      dialog_data);
-
-			create_scale_widget(dialog_data, 0, 1, 0.001,
-					    win_data->background_saturation,
-					    (GSourceFunc)set_background_saturation,
-					    win_data->current_vte);
-
-			dialog_data->original_transparent_background = win_data->transparent_background;
-			if (! compare_strings (win_data->background_image, NULL_DEVICE, TRUE))
-				win_data->transparent_background = TRUE;
-			set_background_saturation(NULL, 0, win_data->background_saturation,
-						  win_data->current_vte);
-			break;
-		}
-#endif
 #ifdef ENABLE_GDKCOLOR_TO_STRING
 		case CHANGE_THE_FOREGROUND_COLOR:				// 9
 		{
@@ -1478,10 +1445,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 					get_and_update_page_name(page_data, FALSE);
 
 					break;
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-				// style  2: change the saturation of background
-				case CHANGE_BACKGROUND_SATURATION:
-#endif
 				// style  9: change the foreground color
 				case CHANGE_THE_FOREGROUND_COLOR:
 				// style 10: change the background color
@@ -1513,11 +1476,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 					}
 					switch (style)
 					{
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-						case CHANGE_BACKGROUND_SATURATION:
-							win_data->background_saturation = gtk_range_get_value(GTK_RANGE(dialog_data->operate[0])) + 0.0005;
-							break;
-#endif
 #ifdef ENABLE_GDKCOLOR_TO_STRING
 						case CHANGE_THE_FOREGROUND_COLOR:
 							if (win_data->use_custom_theme == FALSE) clear_custom_colors_data(win_data, TRUE);
@@ -1579,13 +1537,6 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 #endif
 							switch (style)
 							{
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-								case CHANGE_BACKGROUND_SATURATION:
-									set_background_saturation (NULL, 0,
-												   win_data->background_saturation,
-												   tmp_page_data->vte);
-									break;
-#endif
 								case CHANGE_THE_FOREGROUND_COLOR:
 								case CHANGE_THE_BACKGROUND_COLOR:
 									adjust_vte_color(GTK_COLOR_CHOOSER(dialog_data->operate[0]),
@@ -1748,37 +1699,15 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 				//	vte_terminal_search_set_gregex(VTE_TERMINAL(win_data->current_vte), NULL);
 				//	vte_terminal_search_find_previous(VTE_TERMINAL(win_data->current_vte));
 				//	break;
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-				// style  2: change the saturation of background
-				case CHANGE_BACKGROUND_SATURATION:
-#endif
 				// style  9: change the foreground color
 				case CHANGE_THE_FOREGROUND_COLOR:
 				// style 10: change the background color
 				case CHANGE_THE_BACKGROUND_COLOR:
 				// style  9: change the cursor color
 				case CHANGE_THE_CURSOR_COLOR:
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-					if (style==CHANGE_BACKGROUND_SATURATION)
-					{
-						win_data->transparent_background = dialog_data->original_transparent_background;
-						// g_debug("transparent_background = %d", transparent_background);
-						set_background_saturation(NULL,
-									  0,
-									  win_data->background_saturation,
-									  win_data->current_vte);
-					}
-#endif
 					// print_color(-1, "RECOVER: dialog_data->original_color", dialog_data->original_color);
 					if (style==CHANGE_THE_CURSOR_COLOR)
 						win_data->custom_cursor_color = dialog_data->original_custom_cursor_color;
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-					if (style!=CHANGE_BACKGROUND_SATURATION)
-					{
-						dialog_data->recover = TRUE;
-						adjust_vte_color(GTK_COLOR_CHOOSER(dialog_data->operate[0]), &(dialog_data->original_color), win_data->current_vte);
-					}
-#endif
 					break;
 				// style 4: get function key value
 				case SET_KEY_BINDING:
@@ -3078,9 +3007,6 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 				//	set_background_saturation(NULL, 0, background_saturation, vte);
 
 				vte_terminal_set_color_background_rgba(VTE_TERMINAL(vte), &(final_color));
-#if defined(ENABLE_VTE_BACKGROUND) || defined(FORCE_ENABLE_VTE_BACKGROUND)
-				dirty_vte_terminal_set_background_tint_color(VTE_TERMINAL(vte), final_color);
-#endif
 				if (dialog_data->type==CHANGE_THE_ANSI_COLORS)
 				{
 					dialog_data->ansi_colors[converted_index] = final_color;
