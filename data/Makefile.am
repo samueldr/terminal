@@ -22,13 +22,3 @@ examplesdir = $(datadir)/doc/$(PACKAGE)/examples
 examples_DATA = $(PACKAGE).conf
 
 EXTRA_DIST = $(author_DATA) $(copying_DATA) $(changlog_DATA) $(etc_DATA) $(desktop_DATA) $(pixmaps_DATA) $(examples_DATA)
-
-
-xml_in_files = $(PACKAGE).xml.in
-
-if DEFAULT_APPS_DEFINITION
-xmldir       = $(DEFAULTAPPS_DIR)
-xml_DATA     = $(xml_in_files:.xml.in=.xml)
-endif
-
-@INTLTOOL_XML_RULE@

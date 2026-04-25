@@ -23,11 +23,9 @@ DEBUG=N
 NLS=Y
 SAFEMODE=Y
 STRIP=N
-GNOME_CONTROL_CENTER=Y
 
 GTK_SPC=1
 NLS_SPC=0
-GNOME_CONTROL_CENTER_SPC=0
 
 if [ -z "$CC" ]; then
   CC=gcc
@@ -181,12 +179,6 @@ for opt do
     --enable-strip)
       STRIP=Y
       ;;
-    --enable-gnome-control-center)
-      GNOME_CONTROL_CENTER_SPC=1
-      ;;
-    --disable-gnome-control-center)
-      GNOME_CONTROL_CENTER=N
-      ;;
     *)
       WARN "\n  WARN: invalid option \""
       IMPORTANT "$opt"
@@ -316,25 +308,6 @@ if [ "$NLS" = 'Y' ]; then
 fi
 
 
-# ---- GNOME_CONTROL_CENTER ---- #
-
-if [ "$GNOME_CONTROL_CENTER" = 'Y' ]; then
-  GNOME_CONTROL_CENTER_DIR=`pkg-config --variable=defappsdir --define-variable=datadir='$(DATADIR)' gnome-default-applications 2>&1`
-  if [ $? != 0 ]; then
-    if [ $GNOME_CONTROL_CENTER_SPC -eq 1 ]; then
-      CHECK_MESSAGE 'Gnome Control Center'
-      ERR "[NG]"
-      PACKAGE_MESSAGE "gnome-control-center-dev"
-      exit 1
-    fi
-    GNOME_CONTROL_CENTER_DIR=
-    GNOME_CONTROL_CENTER=N
-  else
-    CHECK_MESSAGE 'Gnome Control Center'
-    INFO "[OK]\n"
-  fi
-fi
-
 $ECHO ""
 
 # ---- REPORT ---- #
@@ -396,10 +369,6 @@ if [ $BSD -eq 1 ]; then
   IMPORTANT "  MANDIR        = \$(PREFIX)/man/man1\n"
   IMPORTANT "  EXAMPLES_DIR  = \$(DATADIR)/examples/\$(BINARY)\n"
 fi
-if [ "$GNOME_CONTROL_CENTER" = 'Y' ]; then
-  IMPORTANT "  GNOME_CONTROL_CENTER     = $GNOME_CONTROL_CENTER\n"
-  IMPORTANT "  GNOME_CONTROL_CENTER_DIR = $GNOME_CONTROL_CENTER_DIR\n"
-fi
 INFO "=================================================\n"
 $ECHO ""
 if [ -n "$GMAKE" ]; then
@@ -430,6 +399,4 @@ $ECHO "LDFLAGS = $LDFLAGS" >> .config
 $ECHO "MAKE = $MAKE" >> .config
 $ECHO "GTK = $GTK" >> .config
 $ECHO "VTE = $VTE" >> .config
-$ECHO "GNOME_CONTROL_CENTER = $GNOME_CONTROL_CENTER" >> .config
-$ECHO "GNOME_CONTROL_CENTER_DIR = $GNOME_CONTROL_CENTER_DIR" >> .config
 

@@ -8,8 +8,6 @@ else
 endif
 
 DESKTOP_DIR ?= $(DATADIR)/applications
-GNOME_CONTROL_CENTER ?= Y
-GNOME_CONTROL_CENTER_DIR ?= $(DATADIR)/gnome-control-center/default-apps
 
 MAIN_BINARY := $(shell if [ -f ../src/$(BINARY)_dev ]; then echo $(BINARY)_dev; fi)
 MAIN_BINARY := $(shell if [ -f ../src/$(BINARY)_dbg ]; then echo $(BINARY)_dbg; fi)
@@ -26,11 +24,6 @@ RomveFileList = $(DESTDIR)/$(ETCDIR)/$(BINARY).conf \
 		$(DESTDIR)/$(ICONDIR)/$(BINARY).png \
 		$(DESTDIR)/$(ICONDIR)/$(BINARY).xpm \
 		$(DESTDIR)/$(EXAMPLES_DIR)/$(BINARY).conf
-ifeq ($(GNOME_CONTROL_CENTER), Y)
-ifneq ($(GNOME_CONTROL_CENTER_DIR), )
-RomveFileList += $(DESTDIR)/$(GNOME_CONTROL_CENTER_DIR)/$(BINARY).xml
-endif
-endif
 
 .PHONY: all
 all: $(BINARY).conf $(BINARY).1.gz
@@ -87,14 +80,6 @@ install: all
 	@ $(PRINTF) "\033[1;33m** installing \033[1;32m$(BINARY).conf\033[1;33m to \033[1;34m$(DESTDIR)/$(EXAMPLES_DIR)\033[1;33m ...\033[0m\n"
 	$(VERBOSITY_OUTPUT) install -d $(DESTDIR)/$(EXAMPLES_DIR)
 	$(VERBOSITY_OUTPUT) install -m 644 $(BINARY).conf $(DESTDIR)/$(EXAMPLES_DIR)
-
-ifeq ($(GNOME_CONTROL_CENTER), Y)
-    ifneq ($(GNOME_CONTROL_CENTER_DIR), )
-	@ $(PRINTF) "\033[1;33m** installing \033[1;32m$(BINARY).xml\033[1;33m to \033[1;34m$(DESTDIR)/$(GNOME_CONTROL_CENTER_DIR)\033[1;33m ...\033[0m\n"
-	$(VERBOSITY_OUTPUT) install -d $(DESTDIR)/$(GNOME_CONTROL_CENTER_DIR)
-	$(VERBOSITY_OUTPUT) install -m 644 $(BINARY).xml $(DESTDIR)/$(GNOME_CONTROL_CENTER_DIR)
-    endif
-endif
 
 .PHONY: uninstall
 uninstall:

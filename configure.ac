@@ -27,17 +27,6 @@ AC_ARG_ENABLE(safe-mode, AC_HELP_STRING([--disable-safe-mode], [disable run in s
 PKG_CHECK_EXISTS(gtk+-2.0 < 2.11,
 		 AC_MSG_WARN([Using Gtk+ >= 2.11.0 to build $_PACKAGE is recommended]))
 
-AC_MSG_CHECKING([whether to install GNOME control-center default application definition])
-if $PKG_CONFIG --variable=keysdir gnome-default-applications >/dev/null ; then
-     AC_MSG_RESULT([yes])
-     DEFAULTAPPS_DIR="`$PKG_CONFIG --variable=defappsdir gnome-default-applications`"
-     AC_SUBST(DEFAULTAPPS_DIR)
-else
-     AC_MSG_RESULT([no])
-     DEFAULTAPPS_DIR=""
-fi
-AM_CONDITIONAL([DEFAULT_APPS_DEFINITION],[test -n "$DEFAULTAPPS_DIR"])
-
 AC_DEFINE([BINARY], ["$_BINARY"], "The binary file name of Terminal.")
 AC_DEFINE([ISSUES], ["$_ISSUES"], "The web site for reporting issues.")
 AC_DEFINE([YEAR], ["$_YEAR"], "The current year.")
