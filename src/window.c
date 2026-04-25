@@ -715,12 +715,6 @@ FINISH:
 char **set_process_data (pid_t entry_pid, gint *ppid, StrAddr **cmd)
 {
 	if (ppid==NULL) return NULL;
-#ifdef FULL
-	if (ppid)
-		g_debug("! Launch set_process_data() with entry_pid = %d, ppid = %d, cmd = %s", entry_pid, *ppid, *cmd);
-	else
-		g_debug("! Launch set_process_data() with entry_pid = %d, ppid = (%p), cmd = %s", entry_pid, ppid, *cmd);
-#endif
 	char **stats = get_pid_stat(entry_pid, 7);
 	if (stats)
 	{
@@ -967,11 +961,6 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 
 gboolean window_key_press(GtkWidget *window, GdkEventKey *event, struct Window *win_data)
 {
-#ifdef FULL
-	if (event)
-		g_debug("! Launch window_key_press() with key = %X (%s), state = %X, win_data = %p",
-			 event->keyval, gdk_keyval_name(event->keyval), event->state, win_data);
-#endif
 	if ((win_data==NULL) || (event==NULL)) return FALSE;
 	// g_debug ("Get win_data = %p in key_press", win_data);
 	// g_debug ("win_data->keep_vte_size = %X, event->state = %X", win_data->keep_vte_size, event->state);
@@ -1394,11 +1383,6 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 
 gboolean window_key_release(GtkWidget *window, GdkEventKey *event, struct Window *win_data)
 {
-#ifdef FULL
-	if (event)
-		g_debug("! Launch window_key_release() with key = %X (%s), state = %X, win_data = %p",
-			 event->keyval, gdk_keyval_name(event->keyval), event->state, win_data);
-#endif
 	if ((win_data==NULL) || (event==NULL)) return FALSE;
 	if ((win_data->disable_url_when_ctrl_pressed == FALSE) || (win_data->enable_key_binding == FALSE) || (win_data->keep_vte_size)) return FALSE;
 

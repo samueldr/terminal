@@ -201,9 +201,6 @@ gchar *convert_escape_sequence_from_string(const gchar *string)
 // return FALSE if the strings are the same.
 gboolean compare_strings(const gchar *string_a, const gchar *string_b, gboolean case_sensitive)
 {
-#ifdef FULL
-	g_debug("! Launch compare_strings()! with string_a = %s, string_b = %s", string_a, string_b);
-#endif
 	if ((string_a == NULL) && (string_b == NULL)) return FALSE;
 	if ((string_a == NULL) || (string_b == NULL)) return TRUE;
 	if (case_sensitive)
@@ -435,10 +432,6 @@ gboolean check_string_in_array(gchar *str, gchar **lists)
 
 //gchar *get_proc_data(pid_t pid, gchar *file, gsize *length)
 //{
-//#ifdef FULL
-//	g_debug("! Launch get_proc_data() with pid = %d, file = %s", pid, file);
-//#endif
-//
 //	if (! proc_exist) return NULL;
 //	if (pid<1) return NULL;
 //
@@ -456,9 +449,6 @@ gboolean check_string_in_array(gchar *str, gchar **lists)
 
 gchar *get_proc_data(pid_t pid, gchar *file, gsize *length)
 {
-#ifdef FULL
-	g_debug("! Launch get_proc_data() with pid = %d, file = %s", pid, file);
-#endif
 	// g_debug("proc_exist = %d", proc_exist);
 	if (! proc_exist) return NULL;
 	if (pid<1) return NULL;
@@ -540,9 +530,6 @@ gchar *get_proc_data(pid_t pid, gchar *file, gsize *length)
 // it will check if the count of returned string array is < max_tokens
 gchar **split_string(const gchar *str, const gchar *split, gint max_tokens)
 {
-#ifdef FULL
-	g_debug("! Launch split_string with str = %s, split = %s, max_tokens = %d", str, split, max_tokens);
-#endif
 	if ((str==NULL) || (split==NULL) || (split[0]=='\0')) return NULL;
 	// g_debug("contents = %s", contents);
 	gchar **datas = g_strsplit_set(str, split, max_tokens);
@@ -567,9 +554,6 @@ gchar **split_string(const gchar *str, const gchar *split, gint max_tokens)
 
 gint count_char_in_string(const gchar *str, const gchar split)
 {
-#ifdef FULL
-	g_debug("! Launch count_char_in_string with str = %s, split = %c", str, split);
-#endif
 	if (str==NULL) return -1;
 
 	gint i = -1, count = 0;
@@ -581,9 +565,6 @@ gint count_char_in_string(const gchar *str, const gchar split)
 
 gchar **get_pid_stat(pid_t pid, gint max_tokens)
 {
-#ifdef FULL
-	g_debug("! Launch get_pid_stat with pid = %d, max_tokens = %d", pid, max_tokens);
-#endif
 	if (pid<1) return NULL;
 
 	gsize length=0;

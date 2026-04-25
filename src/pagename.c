@@ -113,9 +113,6 @@ void init_monitor_cmdline_datas(struct Window *win_data, struct Page *page_data)
 
 gboolean monitor_cmdline(struct Page *page_data)
 {
-#ifdef FULL
-	g_debug("! Launch monitor_cmdline() with page_data = %p", page_data);
-#endif
 	if ((page_data==NULL) || (page_data->lost_focus==NULL) || (page_data->keep_vte_size==NULL) ||
 	    (page_data->current_vte==NULL) || (page_data->window_title_tpgid==NULL)) return FALSE;
 	if (page_data->pid<1) return FALSE;
@@ -232,9 +229,6 @@ gboolean monitor_cmdline(struct Page *page_data)
 
 gboolean check_cmdline(struct Page *page_data, pid_t check_tpgid)
 {
-#ifdef FULL
-	g_debug("! Launch check_cmdline() with page_data = %p, check_tpgid = %d", page_data, check_tpgid);
-#endif
 	if (page_data==NULL) return FALSE;
 	// g_debug("check_tpgid = %d", check_tpgid);
 
@@ -273,9 +267,6 @@ gboolean check_cmdline(struct Page *page_data, pid_t check_tpgid)
 
 gboolean check_window_title (struct Page *page_data, gboolean lost_focus)
 {
-#ifdef FULL
-	g_debug("! Launch check_window_title() with page_data = %p, lost_focus = %d", page_data, lost_focus);
-#endif
 	if (page_data==NULL) return FALSE;
 	gboolean page_name_changed = FALSE;
 
@@ -297,10 +288,6 @@ gboolean check_window_title (struct Page *page_data, gboolean lost_focus)
 
 gboolean check_pwd(struct Page *page_data, gchar *pwd, gchar *new_pwd, gint page_update_method)
 {
-#ifdef FULL
-	g_debug("! Launch check_pwd() with page_data = %p, pwd = %s, new_pwd = %s, page_update_method = %d",
-		page_data, pwd, new_pwd, page_update_method);
-#endif
 	if ((page_data==NULL) || (page_data->window_title_tpgid==NULL)) return FALSE;
 	// g_debug("pwd = %s", pwd);
 	// g_debug("new_pwd = %s", new_pwd);
@@ -791,9 +778,6 @@ void update_window_title(GtkWidget *window, gchar *name, gboolean window_title_a
 // The returned string should be freed when no longer needed.
 gchar *get_tab_name_with_page_names(struct Window *win_data)
 {
-#ifdef FULL
-	g_debug("! Launch get_tab_name_with_page_names() with win_data = %p", win_data);
-#endif
 	if (win_data==NULL) return NULL;
 	// g_debug("Get win_data = %d when get tab name with page names!", win_data);
 	// g_debug("Got win_data->page_names_no = %d, win_data->max_page_names_no = %d",
@@ -859,9 +843,6 @@ gchar *get_tab_name_with_cmdline(struct Page *page_data)
 // The returned string should be freed when no longer needed.
 gchar *get_tab_name_with_current_dir(pid_t pid)
 {
-#ifdef FULL
-	g_debug("! Launch get_tab_name_with_current_dir() for pid %d", pid);
-#endif
 	if (! proc_exist) return NULL;
 
 	if (pid>0)
@@ -880,9 +861,6 @@ gchar *get_tab_name_with_current_dir(pid_t pid)
 
 gint get_tpgid(pid_t pid)
 {
-#ifdef FULL
-	g_debug("! Launch get_tpgid() for pid %d", pid);
-#endif
 	if (pid<1) return 0;
 
 	guint timeout = 0;
