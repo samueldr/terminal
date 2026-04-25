@@ -91,9 +91,6 @@ INCLUDES = -DBINARY=\"$(BINARY)\" \
 	   -DLOCALEDIR=\"$(LOCALEDIR)\" \
 	   -DICONDIR=\"$(ICONDIR)\"
 
-ifeq ($(BSD), 1)
-	INCLUDES += -DBSD
-endif
 ifeq ($(VERBOSITY), Y)
 	VERBOSITY_OUTPUT =
 else

@@ -67,9 +67,6 @@ gboolean check_if_default_proc_dir_exist(gchar *proc_dir)
 	g_debug("! Launch check_if_default_proc_dir_exist() with proc_dir = %s", proc_dir);
 #endif
 	if (check_if_proc_dir_exist(proc_dir)) return TRUE;
-#ifdef BSD
-	if (check_if_proc_dir_exist("/compat/linux/proc")) return TRUE;
-#endif
 	if (check_if_proc_dir_exist("/proc")) return TRUE;
 	return FALSE;
 }

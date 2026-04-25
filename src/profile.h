@@ -39,12 +39,6 @@
 #define DEFAULT_BACKGROUND_COLOR "black"
 #define DEFAULT_CURSOR_COLOR "#44738B"
 
-#ifdef BSD
-// chars in a path name including nul
-// which is already defined in /usr/include/sys/syslimits.h
-// #define PATH_MAX 4096
-#endif
-
 typedef enum {
 	DISABLE_EMPTY_STR,
 	ENABLE_EMPTY_STR,

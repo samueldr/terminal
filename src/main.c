@@ -79,9 +79,7 @@ int main( int   argc,
 #ifdef OUT_OF_MEMORY
 	#define g_strdup_printf(...) NULL
 #endif
-	// in BSD system, /proc may not exist.
 	proc_exist = check_if_default_proc_dir_exist(NULL);
-	// g_debug ("Get proc_exist = %d, proc_file_system_path = %s", proc_exist, proc_file_system_path);
 
 	shell = g_getenv("SHELL");
 	if (shell==NULL) shell = "";
