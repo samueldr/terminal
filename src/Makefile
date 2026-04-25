@@ -127,7 +127,7 @@ dev: develop
 .PHONY: develop
 # develop: CFLAGS := -pedantic -pipe -fno-common -W -Wall -Wcast-align -Wformat=2 -Wpointer-arith -Wundef -Waggregate-return -Wcast-qual -Wmissing-declarations -Wnested-externs -Wstrict-prototypes -O3 -g
 develop: CFLAGS := $(CFLAGS) -g
-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 develop: BINARY := $(BINARY)_dev
 develop: $(BINARY)
 
@@ -141,31 +141,31 @@ verbosity-output: develop
 ddev: defensive-develop
 .PHONY: defensive-develop
 defensive-develop: CFLAGS := $(CFLAGS) -g
-defensive-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+defensive-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DSAFEMODE -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 defensive-develop: BINARY := $(BINARY)_dev
 defensive-develop: $(BINARY)
 
 .PHONY: detail
 detail: CFLAGS := $(CFLAGS) -g
-detail: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+detail: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDETAIL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 detail: BINARY := $(BINARY)_dev
 detail: $(BINARY)
 
 .PHONY: full
 full: CFLAGS = -Wall -Werror -Wformat -Wformat-security -Werror=format-security -Os -g
-full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DPAGENAME -DDEBUG -DFATAL -DDETAIL -DFULL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 full: BINARY := $(BINARY)_dev
 full: $(BINARY)
 
 .PHONY: geometry
 geometry: CFLAGS := $(CFLAGS) -g
-geometry: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+geometry: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DGEOMETRY -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 geometry: BINARY := $(BINARY)_dev
 geometry: $(BINARY)
 
 .PHONY: pagename
 pagename: CFLAGS := $(CFLAGS) -g
-pagename: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DPAGENAME -DDEBUG -DFATAL -DDEVELOP -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
+pagename: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DPAGENAME -DDEBUG -DFATAL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
 pagename: BINARY := $(BINARY)_dev
 pagename: $(BINARY)
 
@@ -173,7 +173,7 @@ pagename: $(BINARY)
 ut: unit_test
 .PHONY: unit_test
 unit_test: CFLAGS := $(CFLAGS) -g
-unit_test: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DDEBUG -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-gdb --test_all
 
@@ -181,14 +181,14 @@ unit_test: $(OBJ)
 uto: unit_test_object
 .PHONY: unit_test_object
 unit_test_object: CFLAGS := $(CFLAGS) -g
-unit_test_object: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_object: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_object: $(OBJ)
 
 .PHONY: utb
 utb: unit_test_build
 .PHONY: unit_test_build
 unit_test_build: CFLAGS := $(CFLAGS) -g
-unit_test_build: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_build: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_build: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --build_program_only
 
@@ -196,7 +196,7 @@ unit_test_build: $(OBJ)
 utd: unit_test_debug
 .PHONY: unit_test_debug
 unit_test_debug: CFLAGS := $(CFLAGS) -g
-unit_test_debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DDEBUG -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_debug: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-glib-debugger --enable-gtk-debugger --enable-gdb
 
@@ -204,7 +204,7 @@ unit_test_debug: $(OBJ)
 utf: unit_test_full
 .PHONY: unit_test_full
 unit_test_full: CFLAGS := $(CFLAGS) -g
-unit_test_full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DDEBUG -DFATAL -DDEVELOP -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DDEBUG -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_full: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-glib-debugger --enable-gtk-debugger --enable-gdb --enable-valgrind
 

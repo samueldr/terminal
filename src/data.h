@@ -55,9 +55,7 @@
 #define SEPARATE_CHAR '\xFF'
 #define SEPARATE_STR "\xFF"
 
-#if defined(DEVELOP)
-	#define SOCKET_FILE PACKAGE "+dev"
-#elif defined(DEBUG)
+#if defined(DEBUG)
 	#define SOCKET_FILE PACKAGE "+dbg"
 #else
 	#define SOCKET_FILE PACKAGE

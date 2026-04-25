@@ -65,10 +65,6 @@ int main( int   argc,
 	bind_textdomain_codeset(BINARY, "UTF-8");
 	textdomain(BINARY);
 
-#if ! defined(SAFEMODE) && defined(DEVELOP)
-	g_message("Running %s without SAFE MODE!", PACKAGE);
-#endif
-
 #ifdef ENABLE_PROFILE
 	const gchar *user_config_dir = g_get_user_config_dir();
 	if (user_config_dir) profile_dir = g_strdup_printf("%s/%s", user_config_dir, BINARY);
