@@ -13,7 +13,6 @@ ETCDIR=`grep "^ETCDIR = " .default | awk -F ' = ' '{print $2}'`
 GTK=gtk+-3.0
 
 VERBOSITY=N
-DEBUG=N
 NLS=Y
 SAFEMODE=Y
 STRIP=N
@@ -148,12 +147,6 @@ for opt do
       ;;
     --disable-verbosity)
       VERBOSITY=N
-      ;;
-    --enable-debug)
-      DEBUG=Y
-      ;;
-    --disable-debug)
-      DEBUG=N
       ;;
     --prefix=*)
       PREFIX=`$ECHO $opt | cut -d '=' -f 2`
@@ -312,11 +305,6 @@ IMPORTANT "  ETCDIR     = $ETCDIR\n"
 if [ "$VERBOSITY" = 'Y' ]; then
   IMPORTANT "  VERBOSITY  = $VERBOSITY\n"
 fi
-if [ "$DEBUG" = 'Y' ]; then
-  IMPORTANT "  DEBUG      = $DEBUG\n"
-else
-  $ECHO "  DEBUG      = $DEBUG"
-fi
 if [ "$NLS" = 'N' ]; then
   IMPORTANT "  NLS        = $NLS\n"
 else
@@ -373,7 +361,6 @@ $ECHO "PREFIX = $PREFIX" >> .config
 $ECHO "ETCDIR = $ETCDIR" >> .config
 $ECHO "NLS = $NLS" >> .config
 $ECHO "VERBOSITY = $VERBOSITY" >> .config
-$ECHO "DEBUG = $DEBUG" >> .config
 $ECHO "NLS = $NLS" >> .config
 $ECHO "SAFEMODE = $SAFEMODE" >> .config
 $ECHO "STRIP = $STRIP" >> .config

@@ -16,10 +16,6 @@ AM_PATH_GLIB_2_0(2.5.4,,AC_MSG_ERROR([You need Glib >= 2.5.4 to build $_PACKAGE]
 AM_PATH_GTK_2_0(2.4.10,,AC_MSG_ERROR([You need Gtk+ >= 2.4.10 to build $_PACKAGE]))
 PKG_CHECK_MODULES(vte, [vte >= 0.11.11],, AC_MSG_ERROR([You need libvte >= 0.11.11 to build $_PACKAGE]))
 
-AC_ARG_ENABLE(debug, AC_HELP_STRING([--enable-debug], [enable debug mode]),
-	      CFLAGS="$CFLAGS -g"
-	      AC_DEFINE(DEBUG,, [enable debug mode]))
-
 PKG_CHECK_EXISTS(gtk+-2.0 < 2.11,
 		 AC_MSG_WARN([Using Gtk+ >= 2.11.0 to build $_PACKAGE is recommended]))
 

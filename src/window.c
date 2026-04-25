@@ -2127,14 +2127,7 @@ void remove_notebook_page(GtkNotebook *notebook, GtkWidget *child, guint page_nu
 #endif
 			if (run_quit_gtk)
 			{
-				// done in gtk_quit_add
-				// if (single_process)
-				//	shutdown_socket_server();
-				// g_debug("remove_notebook_page(): call gtk_main_quit()");
 				quit_gtk();
-#ifdef DEBUG
-				g_message("%s had been closed normally!", PACKAGE);
-#endif
 			}
 #ifndef UNIT_TEST
 			else

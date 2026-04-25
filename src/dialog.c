@@ -1975,24 +1975,11 @@ void update_color_buttons(struct Window *win_data, struct Dialog *dialog_data)
 #  endif
 #endif
 #ifdef ENABLE_GDKCOLOR_TO_STRING
-#  ifdef DEBUG
-		gchar *color_string = dirty_gdk_rgba_to_string(&(temp_color[color_index]));
-		gchar *temp_str =  g_strdup_printf("%s [%d] - %s", color[i].translation, color_index, color_string);
-#    ifdef ENABLE_SET_TOOLTIP_TEXT
-#      ifdef SAFEMODE
-		if (dialog_data->color_button[i])
-#      endif
-			gtk_widget_set_tooltip_text(dialog_data->color_button[i], temp_str);
+#  ifdef ENABLE_SET_TOOLTIP_TEXT
+#    ifdef SAFEMODE
+      if (dialog_data->color_button[i])
 #    endif
-		g_free(temp_str);
-		g_free(color_string);
-#  else
-#    ifdef ENABLE_SET_TOOLTIP_TEXT
-#      ifdef SAFEMODE
-		if (dialog_data->color_button[i])
-#      endif
-			gtk_widget_set_tooltip_text(dialog_data->color_button[i], color[i].translation);
-#    endif
+      	gtk_widget_set_tooltip_text(dialog_data->color_button[i], color[i].translation);
 #  endif
 #endif
 #ifdef USE_OLD_GTK_COLOR_SELECTION

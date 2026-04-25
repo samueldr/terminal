@@ -55,11 +55,7 @@
 #define SEPARATE_CHAR '\xFF'
 #define SEPARATE_STR "\xFF"
 
-#if defined(DEBUG)
-	#define SOCKET_FILE PACKAGE "+dbg"
-#else
-	#define SOCKET_FILE PACKAGE
-#endif
+#define SOCKET_FILE PACKAGE
 
 #if GTK_CHECK_VERSION(2,5,1)
 	// SINCE: gtk+-2.05.01/gtk/gtklabel.h:void gtk_label_set_ellipsize()
@@ -728,7 +724,7 @@ typedef enum {
 } Geometry_Resize_Type;
 #endif
 
-#if defined(GEOMETRY) || defined(UNIT_TEST) || defined(DEBUG) || defined(PAGENAME)
+#if defined(GEOMETRY) || defined(UNIT_TEST) || defined(PAGENAME)
 typedef enum {
 	ANSI_COLOR_BLACK =   30,
 	ANSI_COLOR_RED =     31,

@@ -769,10 +769,6 @@ gboolean update_page_name(GtkWidget *window, GtkWidget *vte, gchar *page_name, G
 			}
 #endif
 		}
-#ifdef DEBUG
-		// else
-		//	g_debug("!!! the window is lost focus, don't update the tab name");
-#endif
 		// free the data
 		g_free(label_name);
 	// we should update window title if page name changed.
@@ -910,18 +906,10 @@ gchar *get_tab_name_with_cmdline(struct Page *page_data)
 		else
 		{
 			// g_debug("pid = %d, tpgid = %d, pid_cmdline = %s", pid, tpgid, pid_cmdline);
-#ifdef DEBUG
-			g_message("Got (%s), Trying to reread the %s/%d/cmdline...",
-				  tpgid_cmdline, proc_file_system_path, (gint)page_data->current_tpgid);
-#endif
 			g_free(tpgid_cmdline);
 			// Magic number: we wait for 0.15 sec then reread cmdline again.
 			usleep(150000);
 			tpgid_cmdline = get_cmdline(page_data->current_tpgid);
-#ifdef DEBUG
-			g_message("Got (%s) after reread the %s/%d/cmdline.",
-				  tpgid_cmdline, proc_file_system_path, (gint)page_data->current_tpgid);
-#endif
 			return tpgid_cmdline;
 		}
 	}

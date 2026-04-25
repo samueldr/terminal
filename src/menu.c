@@ -34,10 +34,5 @@ gboolean check_if_win_data_is_still_alive(struct Window *win_data)
 		if (win_data == win_list->data) return TRUE;
 		win_list = win_list->next;
 	}
-#ifdef DEBUG
-	fprintf(stderr, "\033[1;%dm** check_if_win_data_is_still_alive(): win_data (%p) is NOT alive!\033[0m\n",
-		ANSI_COLOR_RED, win_data);
-#endif
-	// g_debug("check_if_win_data_is_still_alive: win_data (%p) is NOT alive!!!", win_data);
 	return FALSE;
 }
