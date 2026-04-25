@@ -82,9 +82,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 	real_menu_active_window = menu_active_window;
 
 	struct Dialog *dialog_data = g_new0(struct Dialog, 1);
-#ifdef SAFEMODE
 	if (real_menu_active_window)
-#endif
 		g_object_set_data(G_OBJECT(real_menu_active_window), "Dialog", dialog_data);
 	dialog_data->type = style;
 	gboolean selectable = FALSE;
@@ -93,16 +91,12 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 	// gchar *selection_clipboard_str = g_strdup(gtk_clipboard_wait_for_text(selection_clipboard));
 	extern GtkClipboard *selection_primary;
 	gchar *selection_primary_str = NULL;
-#ifdef SAFEMODE
 	if (selection_primary)
-#endif
 		selection_primary_str = g_strdup(gtk_clipboard_wait_for_text(selection_primary));
 
 	GtkResponseType dialog_response = GTK_RESPONSE_NONE;
 
-#ifdef SAFEMODE
 	if (dialog_data==NULL) goto FINISH;
-#endif
 	gchar *temp_str[TEMPSTR] = {NULL};
 
 	struct Window *win_data = NULL;
@@ -115,9 +109,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 		gchar *err_msg = g_strdup_printf("dialog(%ld): real_menu_active_window = NULL\n\n"
 						  "Please report bug to %s, Thanks!",
 						  (glong)style, BUGREPORT);
-#ifdef SAFEMODE
 		if (err_msg)
-#endif
 			error_dialog(NULL, _("The following error occurred:"),
 				     "The following error occurred:",
 				     GTK_FAKE_STOCK_DIALOG_ERROR, err_msg, NULL);
@@ -128,9 +120,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 #endif
 		win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
 
-#ifdef SAFEMODE
 	if (win_data==NULL) goto FINISH;
-#endif
 
 	gboolean enable_key_binding = win_data->enable_key_binding;
 
@@ -141,9 +131,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 	if (win_data->current_vte!=NULL)
 	{
 		page_data = get_page_data_from_vte(win_data->current_vte, win_data, -1);
-#ifdef SAFEMODE
 		if (page_data==NULL) goto FINISH;
-#endif
 		// g_debug("Get win_data = %p, page_data = %p, current_vte = %p when creating dialog!",
 		//	win_data, page_data, win_data->current_vte);
 
@@ -305,9 +293,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 			if (vte_terminal_get_has_selection(VTE_TERMINAL(win_data->current_vte)))
 			{
 				extern GtkClipboard *selection_primary;
-#ifdef SAFEMODE
 				if (selection_primary)
-#endif
 					clipboard_str = gtk_clipboard_wait_for_text (selection_primary);
 				if (clipboard_str && (clipboard_str[0]!='\0'))
 					gtk_entry_set_text(GTK_ENTRY(dialog_data->operate[0]),
@@ -657,24 +643,18 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 
 			dialog_data->original_page_color = win_data->user_page_color[page_color_type];
 			// g_debug("dialog_data->original_page_color = %s", dialog_data->original_page_color);
-#ifdef SAFEMODE
 			if (dialog_data->original_page_color)
-#endif
 				dirty_gdk_color_parse(win_data->user_page_color[page_color_type], &(dialog_data->original_color));
 
 			// vte = the 1st page of current notebook.
 			struct Page *page_data = get_page_data_from_nth_page(win_data, 0);
-#ifdef SAFEMODE
 			if (page_data)
 			{
-#endif
 				create_color_selection_widget(dialog_data, (GSourceFunc)adjust_vte_color, page_data->vte);
 				// store the is_bold data of 1st page...
 				dialog_data->tab_1_is_bold = page_data->is_bold;
 				// win_data->lost_focus = FALSE;
-#ifdef SAFEMODE
 			}
-#endif
 			// only bold the 1st page
 			gboolean is_bold = TRUE;
 			// the color for using in 1st page, can NOT be free()!
@@ -704,10 +684,8 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 			{
 				// ste the page name and color for demo.
 				struct Page *tmp_page = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 				if (tmp_page)
 				{
-#endif
 					dialog_data->original_update_method[i] = tmp_page->page_update_method;
 					// g_debug ("??? Save: (%d) tmp_page->page_update_method = %d",
 					//	i+1, tmp_page->page_update_method);
@@ -745,9 +723,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 							 FALSE);
 					// only 1st page is bold.
 					is_bold = FALSE;
-#ifdef SAFEMODE
 				}
-#endif
 			}
 			// g_debug("Got tabs_bar_is_shown = %d", tabs_bar_is_shown);
 			if (! tabs_bar_is_shown)
@@ -1428,11 +1404,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 					g_free(page_data->custom_page_name);
 
 					const gchar *text = gtk_entry_get_text(GTK_ENTRY(dialog_data->operate[0]));
-#ifdef SAFEMODE
 					if ((text) && (text[0]!='\0'))
-#else
-					if (text[0]!='\0')
-#endif
 						// store page_data->page_name
 						page_data->custom_page_name = g_strdup(text);
 					else
@@ -1508,9 +1480,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 							for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 							{
 								tmp_page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 								if (tmp_page_data==NULL) goto DESTROY_WINDOW;
-#endif
 								if (tmp_page_data->tab_color == win_data->user_page_color[page_color_type])
 									tmp_page_data->tab_color = new_color_str;
 							}
@@ -1532,9 +1502,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 						for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 						{
 							tmp_page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 							if (tmp_page_data==NULL) goto DESTROY_WINDOW;
-#endif
 							switch (style)
 							{
 								case CHANGE_THE_FOREGROUND_COLOR:
@@ -1662,9 +1630,7 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 					for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 					{
 						page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 						if (page_data==NULL) goto DESTROY_WINDOW;
-#endif
 						set_vte_color(page_data->vte, default_vte_color, win_data->custom_cursor_color,
 							      win_data->cursor_color, win_data->color, FALSE, FALSE);
 					}
@@ -1780,16 +1746,12 @@ GtkResponseType dialog(GtkWidget *widget, gsize style)
 #ifdef UNIT_TEST
 	}
 #endif
-#ifdef SAFEMODE
 DESTROY_WINDOW:
-#endif
 	if (selectable)
 	{
 		extern GtkClipboard *selection_primary;
 		gchar *current_clipboard_str = NULL;
-#ifdef SAFEMODE
 		if (selection_primary)
-#endif
 			current_clipboard_str = gtk_clipboard_wait_for_text(selection_primary);
 		if ((current_clipboard_str!=NULL) && (current_clipboard_str[0]!='\0'))
 		{
@@ -1844,9 +1806,7 @@ void init_dialog_ansi_colors_from_win_data(struct Window *win_data, struct Dialo
 #ifdef DETAIL
 	g_debug("! Launch init_dialog_ansi_colors_from_win_data() with win_data = %p, dialog_data = %p", win_data, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (dialog_data==NULL)) return;
-#endif
 	gint i;
 	for (i=COLOR-1; i>=0; i--)
 	{
@@ -1864,9 +1824,7 @@ void update_custom_cursor_color(GtkWidget *menuitem, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch update_custom_cursor_color() with menuitem = %p, win_data = %p", menuitem, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((menuitem==NULL) || (win_data==NULL)) return;
-#endif
 
 	win_data->custom_cursor_color = ! gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(menuitem));
 	enable_custom_cursor_color(win_data->current_vte, win_data->custom_cursor_color, &(win_data->cursor_color));
@@ -1878,13 +1836,9 @@ void dialog_invert_color_theme(GtkWidget *menuitem, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch dialog_invert_color_theme() with menuitem = %p, win_data = %p", menuitem, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((menuitem==NULL) || (win_data==NULL)) return;
-#endif
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	// g_debug("dialog_invert_color_theme(): (before) win_data->temp_index = %d, win_data->invert_color = %d",
 	//	win_data->temp_index, win_data->invert_color);
 
@@ -1923,9 +1877,7 @@ void update_color_buttons(struct Window *win_data, struct Dialog *dialog_data)
 #ifdef DETAIL
 	g_debug("! Launch update_color_buttons() with win_data = %p, dialog_data = %p", win_data, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (dialog_data==NULL)) return;
-#endif
 #ifdef USE_OLD_GTK_COLOR_SELECTION
 	// Get the default size of GTK_ICON_SIZE_MENU
 	gint width = 16, height = 16;
@@ -1959,15 +1911,11 @@ void update_color_buttons(struct Window *win_data, struct Dialog *dialog_data)
 
 #  ifdef HAVE_GTK_BUTTON_SET_IMAGE
 		GtkWidget *image = gtk_image_new_from_pixbuf (pixbuf);
-#    ifdef SAFEMODE
 		if (dialog_data->color_button[i])
-#    endif
 			gtk_button_set_image(GTK_BUTTON(dialog_data->color_button[i]), image);
 #  endif
 #else
-#  ifdef SAFEMODE
 		if (dialog_data->color_button[i])
-#  endif
 #  ifdef USE_GTK_COLOR_CHOOSER
 			gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(dialog_data->color_button[i]), &(temp_color[color_index]));
 #  else
@@ -1976,9 +1924,7 @@ void update_color_buttons(struct Window *win_data, struct Dialog *dialog_data)
 #endif
 #ifdef ENABLE_GDKCOLOR_TO_STRING
 #  ifdef ENABLE_SET_TOOLTIP_TEXT
-#    ifdef SAFEMODE
       if (dialog_data->color_button[i])
-#    endif
       	gtk_widget_set_tooltip_text(dialog_data->color_button[i], color[i].translation);
 #  endif
 #endif
@@ -2016,9 +1962,7 @@ void clear_custom_colors_data(struct Window *win_data, gboolean update_fg)
 #ifdef DETAIL
 	g_debug("! Launch clear_custom_colors_data() with win_data = %p, update_fg = %d", win_data, update_fg);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	gint i, j;
 
 	for (i=0; i<THEME; i++)
@@ -2031,9 +1975,7 @@ void update_fg_bg_color(struct Window *win_data, GdkRGBA color, gboolean update_
 #ifdef DETAIL
 	g_debug("! Launch update_fg_bg_color() with win_data = %p, update_fg = %d", win_data, update_fg);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	gint color_index = 0;
 	if (update_fg)
 	{
@@ -2083,17 +2025,11 @@ void update_ansi_color_info(GtkWidget *button, gint color_index)
 #ifdef DETAIL
 	g_debug("! Launch update_ansi_color_info() with button = %p, color_index = %d", button, color_index);
 #endif
-#ifdef SAFEMODE
 	if (real_menu_active_window==NULL) return;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->current_vte==NULL)) return;
-#endif
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	gint convert_index = get_color_index(win_data->invert_color, color_index);
 
 	gchar *tmp_topic = g_strdup_printf(_("Change the ansi color [%s] in terminal"), color[convert_index].translation);
@@ -2103,9 +2039,7 @@ void update_ansi_color_info(GtkWidget *button, gint color_index)
 	// g_debug("update_ansi_color_info(): set win_data->temp_index to -1");
 	win_data->temp_index = -1;
 #ifdef USE_OLD_GTK_COLOR_SELECTION
-#  ifdef SAFEMODE
 	if (dialog_data->operate[0]==NULL) return;
-#  endif
 	set_color_selection_colors(dialog_data->operate[0], &(dialog_data->ansi_colors_orig[convert_index]));
 #else
 #  ifdef USE_GTK_COLOR_CHOOSER
@@ -2127,9 +2061,7 @@ GtkWidget *create_label_with_text(GtkWidget *box, gboolean set_markup, gboolean 
 		"selectable = %d, max_width_chars = %d, text = %s",
 		box, set_markup, selectable, max_width_chars, text);
 #endif
-#ifdef SAFEMODE
 	if (text==NULL) return NULL;
-#endif
 	GtkWidget *label = gtk_label_new(NULL);
 	if (set_markup)
 		gtk_label_set_markup(GTK_LABEL (label), text);
@@ -2149,9 +2081,7 @@ GtkWidget *add_secondary_button(GtkWidget *dialog, const gchar *text, gint respo
 	g_debug("! Launch add_secondary_button() with dialog = %p, text = %s, response_id = %d, stock_id = %s",
 		dialog, text, response_id, stock_id);
 #endif
-#ifdef SAFEMODE
 	if ((text==NULL) || (dialog==NULL)) return NULL;
-#endif
 	GtkWidget *button = gtk_dialog_add_button (GTK_DIALOG(dialog), text, response_id);
 #ifdef HAVE_GTK_BUTTON_SET_IMAGE
 	if (stock_id)
@@ -2170,27 +2100,17 @@ void refresh_regex_settings(GtkWidget *widget, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch refresh_regex_settings() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->window==NULL)) return;
-#endif
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	g_free(win_data->find_string);
-#ifdef SAFEMODE
 	if (dialog_data->operate[0]!=NULL)
-#endif
 		win_data->find_string = g_strdup(gtk_entry_get_text(GTK_ENTRY(dialog_data->operate[0])));
 	// win_data->find_case_sensitive = GTK_TOGGLE_BUTTON(dialog_data->operate[1])->active;
-#ifdef SAFEMODE
 	if (dialog_data->operate[1]!=NULL)
-#endif
 		win_data->find_case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog_data->operate[1]));
 	// win_data->find_use_perl_regular_expressions = GTK_TOGGLE_BUTTON(dialog_data->operate[2])->active;
-#ifdef SAFEMODE
 	if (dialog_data->operate[2]!=NULL)
-#endif
 		win_data->find_use_perl_regular_expressions = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog_data->operate[2]));
 
 	// g_debug("Got win_data->find_string = %s", win_data->find_string);
@@ -2205,9 +2125,7 @@ void refresh_regex(struct Window *win_data, struct Dialog *dialog_data)
 #ifdef DETAIL
 	g_debug("! Launch refresh_regex with win_data = %p, dialog_data = %p", win_data, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->current_vte==NULL) || (dialog_data == NULL)) return;
-#endif
 #ifdef ENABLE_FIND_STRING
 #  ifdef HAVE_VTE_TERMINAL_SEARCH_SET_GREGEX
 	gint RegexCompileFlags = G_REGEX_OPTIMIZE;
@@ -2275,10 +2193,8 @@ void refresh_regex(struct Window *win_data, struct Dialog *dialog_data)
 		}
 	}
 
-#  ifdef SAFEMODE
 	if (dialog_data->operate[0]!=NULL)
 	{
-#  endif
 		if (update_bg_color)
 		{
 #  ifdef USING_OLD_GTK_RC_STYLE_NEW
@@ -2309,12 +2225,8 @@ void refresh_regex(struct Window *win_data, struct Dialog *dialog_data)
 			g_free(color_string);
 #  endif
 		}
-#  ifdef SAFEMODE
 	}
-#  endif
-#  ifdef SAFEMODE
 	if (dialog_data->operate[3]!=NULL)
-#  endif
 		gtk_widget_hide(dialog_data->operate[3]);
 #endif
 }
@@ -2330,13 +2242,9 @@ void find_str(GtkWidget *widget, Dialog_Find_Type type)
 	if (real_menu_active_window==NULL)
 		return print_active_window_is_null_error_dialog("find_str_in_vte()");
 #endif
-#ifdef SAFEMODE
 	if (real_menu_active_window==NULL) return;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->current_vte==NULL)) return;
-#endif
 #ifdef ENABLE_FIND_STRING
 	vte_terminal_search_set_wrap_around (VTE_TERMINAL(win_data->current_vte), FALSE);
 	gboolean response = find_str_in_vte(win_data->current_vte, type);
@@ -2375,9 +2283,7 @@ gboolean find_str_in_vte(GtkWidget *vte, Dialog_Find_Type type)
 #ifdef DETAIL
 	g_debug("! Launch find_str_in_vte() with type = %d", type);
 #endif
-#ifdef SAFEMODE
 		if (vte==NULL) return FALSE;
-#endif
 	gboolean response = FALSE;
 
 #ifdef ENABLE_FIND_STRING
@@ -2405,10 +2311,8 @@ void paste_text_to_vte_terminal(GtkWidget *widget, struct Dialog *dialog_data)
 #ifdef DETAIL
 	g_debug("! Launch paste_text_to_vte_terminal()");
 #endif
-#ifdef SAFEMODE
 	if ((dialog_data==NULL) || (dialog_data->operate[0]==NULL)) return;
 	// g_debug("paste_text_to_vte_terminal() Got dialog_data->operate[0] = %p", dialog_data->operate[0]);
-#endif
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(dialog_data->operate[0]));
 	if ((text == NULL) || (text[0] == '\0')) return;
 #ifdef FATAL
@@ -2416,13 +2320,9 @@ void paste_text_to_vte_terminal(GtkWidget *widget, struct Dialog *dialog_data)
 	if (real_menu_active_window==NULL)
 		return print_active_window_is_null_error_dialog("paste_text_to_vte_terminal()");
 #endif
-#ifdef SAFEMODE
 	if (real_menu_active_window==NULL) return;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 
 	gboolean append_new_line = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog_data->operate[1]));
 	gchar *past_str = NULL;
@@ -2436,9 +2336,7 @@ void paste_text_to_vte_terminal(GtkWidget *widget, struct Dialog *dialog_data)
 	for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data==NULL) continue;
-#endif
 		vte_terminal_feed_child(VTE_TERMINAL(page_data->vte), past_str, -1);
 	}
 	g_free(past_str);
@@ -2452,9 +2350,7 @@ GtkWidget *create_entry_widget (GtkWidget *box, gchar *contents, gchar *name, gc
 	g_debug("! Launch create_entry_widget() with box = %p, contents = %s, name = %s, default_value = %s",
 		box, contents, name, default_value);
 #endif
-#ifdef SAFEMODE
 	if (box==NULL) return NULL;
-#endif
 	GtkWidget *mainbox = dirty_gtk_vbox_new(FALSE, 10);
 
 	if (contents && contents[0]!='\0')
@@ -2490,14 +2386,10 @@ GtkWidget *create_frame_widget (struct Dialog *dialog_data, gchar *label,
 	g_debug("! Launch create_frame_widget() with dialog_data = %p, label = %s, label_widget = %p, "
 		"child = %p, padding = %d!", dialog_data, label, label_widget, child, padding);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return NULL;
-#endif
 	GtkWidget *frame = gtk_frame_new (label);
 	if (label_widget) gtk_frame_set_label_widget (GTK_FRAME(frame), label_widget);
-#ifdef SAFEMODE
 	if (dialog_data->box!=NULL)
-#endif
 	gtk_box_pack_start (GTK_BOX(dialog_data->box), frame, FALSE, FALSE, padding);
 	GtkWidget *vbox = dirty_gtk_vbox_new (FALSE, 15);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), BORDER_SPACE);
@@ -2535,9 +2427,7 @@ GtkWidget *create_button_with_image(gchar *label_text, const gchar *stock_id, gb
 #else
 	gtk_button_set_alignment(GTK_BUTTON(label), 0, 0.5);
 #endif
-#ifdef SAFEMODE
 	if (func)
-#endif
 		g_signal_connect(G_OBJECT(label), "clicked", G_CALLBACK(func), func_data);
 	return label;
 }
@@ -2565,9 +2455,7 @@ void create_color_selection_widget(struct Dialog *dialog_data, GSourceFunc func,
 #ifdef DETAIL
 	g_debug("! Launch create_color_selection_widget() with dialog_data = %p!", dialog_data);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 
 #ifdef USE_GTK_COLOR_CHOOSER
 	dialog_data->window = dialog_data->operate[0] = gtk_color_chooser_dialog_new(NULL, GTK_WINDOW(dialog_data->window));
@@ -2577,9 +2465,7 @@ void create_color_selection_widget(struct Dialog *dialog_data, GSourceFunc func,
 	set_color_selection_colors(dialog_data->operate[0], &(dialog_data->original_color));
 
 	// FIXME: The "color-changed" signal don't work in GTK3+ anymore.
-#  ifdef SAFEMODE
 	// if (func)
-#  endif
 	//	g_signal_connect_after(dialog_data->operate[0], "color-activated",
 	//			       G_CALLBACK(func), func_data);
 #endif
@@ -2593,14 +2479,10 @@ void create_color_selection_widget(struct Dialog *dialog_data, GSourceFunc func,
 
 	set_color_selection_colors(dialog_data->operate[0], &(dialog_data->original_color));
 
-#  ifdef SAFEMODE
 	if (dialog_data->box!=NULL)
-#  endif
 	gtk_box_pack_start (GTK_BOX(dialog_data->box), dialog_data->operate[0], TRUE, TRUE, 0);
 
-#  ifdef SAFEMODE
 	if (func)
-#  endif
 		g_signal_connect_after(dialog_data->operate[0], "color-changed",
 				       G_CALLBACK(func), func_data);
 #endif
@@ -2608,9 +2490,7 @@ void create_color_selection_widget(struct Dialog *dialog_data, GSourceFunc func,
 
 void set_color_selection_colors(GtkWidget *color_selection, GdkRGBA *color)
 {
-#ifdef SAFEMODE
 	if (color_selection==NULL) return;
-#endif
 #ifdef USE_GTK_COLOR_CHOOSER
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(color_selection), color);
 #else
@@ -2627,15 +2507,10 @@ void create_scale_widget(struct Dialog *dialog_data, gdouble min, gdouble max, g
 	g_debug("! Launch create_scale_widget() with dialog_data = %p, min = %3f, max = %3f, step = %3f, value = %3f!",
 		dialog_data, min, max, step, value);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	GtkWidget *hbox1 = dirty_gtk_hbox_new (FALSE, 0);
-#ifdef SAFEMODE
 	if (dialog_data->box!=NULL)
-#endif
 		gtk_box_pack_start (GTK_BOX(dialog_data->box), hbox1, FALSE, FALSE, 0);
-#ifdef SAFEMODE
 	if ((min==max) || (step==0)) return;
 
 	if (min>max)
@@ -2644,24 +2519,17 @@ void create_scale_widget(struct Dialog *dialog_data, gdouble min, gdouble max, g
 		max = min;
 		min = tmp;
 	}
-#endif
 	dialog_data->operate[0] = gtk_hscale_new_with_range(min, max, step);
 	gtk_widget_set_size_request(dialog_data->operate[0], 210, -1);
 	gtk_range_set_value(GTK_RANGE(dialog_data->operate[0]), value);
 #ifdef HAVE_GTKRANGE_CHANGE_VALUE
-#  ifdef SAFEMODE
 	if (func)
-#  endif
 		g_signal_connect_after(dialog_data->operate[0], "change-value", G_CALLBACK(func), func_data);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data->box!=NULL)
-#endif
 		gtk_box_pack_start (GTK_BOX(dialog_data->box), dialog_data->operate[0], TRUE, TRUE, 0);
 	GtkWidget *hbox2 = dirty_gtk_hbox_new (FALSE, 0);
-#ifdef SAFEMODE
 	if (dialog_data->box!=NULL)
-#endif
 		gtk_box_pack_end (GTK_BOX(dialog_data->box), hbox2, FALSE, FALSE, 0);
 }
 
@@ -2673,9 +2541,7 @@ void create_SIGKILL_and_EXIT_widget(struct Dialog *dialog_data, gboolean create_
 		"create_force_kill_hbox = %d, count_str = %s!",
 		dialog_data, create_entry_hbox, create_force_kill_hbox, count_str);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	if (create_entry_hbox)
 	{
 		gchar *message = g_strdup_printf(_("Try to kill %s with SIGKILL() "
@@ -2683,9 +2549,7 @@ void create_SIGKILL_and_EXIT_widget(struct Dialog *dialog_data, gboolean create_
 					  "(MAY CAUSE DATA LOSS!!)"), count_str);
 		dialog_data->operate[1] = gtk_check_button_new_with_label(message);
 		g_free(message);
-#ifdef SAFEMODE
 		if (dialog_data->box!=NULL)
-#endif
 			gtk_box_pack_start (GTK_BOX(dialog_data->box), dialog_data->operate[1], FALSE, FALSE, 0);
 		set_widget_can_not_get_focus(dialog_data->operate[1]);
 	}
@@ -2696,9 +2560,7 @@ void create_SIGKILL_and_EXIT_widget(struct Dialog *dialog_data, gboolean create_
 						  PACKAGE);
 		dialog_data->operate[0] = gtk_check_button_new_with_label(exit_str);
 		g_free(exit_str);
-#ifdef SAFEMODE
 		if (dialog_data->box!=NULL)
-#endif
 			gtk_box_pack_start (GTK_BOX(dialog_data->box), dialog_data->operate[0], FALSE, FALSE, 0);
 		set_widget_can_not_get_focus(dialog_data->operate[0]);
 	}
@@ -2710,9 +2572,7 @@ gchar *get_colorful_profile(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch get_colorful_profile() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
-#endif
 
 	gchar *profile;
 	if (win_data->use_custom_profile)
@@ -2734,9 +2594,7 @@ gboolean grab_key_press (GtkWidget *window, GdkEventKey *event, struct Dialog *d
 #ifdef DETAIL
 	if (event) g_debug("! Launch grab_key_press() with key value = %d (%s)", event->keyval, gdk_keyval_name(event->keyval));
 #endif
-#ifdef SAFEMODE
 	if (event==NULL) return FALSE;
-#endif
 	gchar *key_value = g_strdup("");
 	gint i=0;
 
@@ -2748,16 +2606,12 @@ gboolean grab_key_press (GtkWidget *window, GdkEventKey *event, struct Dialog *d
 	set_markup_key_value(TRUE, "blue", key_value, dialog_data->operate[0]);
 
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	struct Page *page_data = NULL;
 	for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data==NULL) continue;
-#endif
 		// g_debug("Send key %s to vte %p!!", key_value, page_data->vte);
 		// gtk_test_widget_send_key (page_data->vte, event->keyval, event->state);
 		gtk_widget_event(page_data->vte, (GdkEvent *)event);
@@ -2771,9 +2625,7 @@ gboolean deal_dialog_key_press(GtkWidget *window, GdkEventKey *event, struct Dia
 #ifdef DETAIL
 	if (event) g_debug("! Launch deal_dialog_key_press() with key value = %s", gdk_keyval_name(event->keyval));
 #endif
-#ifdef SAFEMODE
 	if ((dialog_data==NULL) || (event==NULL)) return FALSE;
-#endif
 	if (dialog_data->current_key_index < 0) return FALSE;
 
 	gchar *key_value = g_strdup("");
@@ -2790,15 +2642,9 @@ gboolean deal_dialog_key_press(GtkWidget *window, GdkEventKey *event, struct Dia
 
 	g_free(dialog_data->user_key_value[dialog_data->current_key_index]);
 	gboolean key_value_need_free = FALSE;
-#ifdef SAFEMODE
 	if ((key_value && (key_value[0]!='\0')) ||
 	    ((event->keyval >= GDK_KEY_F1) && (event->keyval <= GDK_KEY_F12)) ||
 	    (event->keyval == GDK_KEY_Menu) || (event->keyval == GDK_KEY_Super_L) || (event->keyval == GDK_KEY_Super_R))
-#else
-	if (key_value[0]!='\0' ||
-	    ((event->keyval >= GDK_KEY_F1) && (event->keyval <= GDK_KEY_F12)) ||
-	    (event->keyval == GDK_KEY_Menu) || (event->keyval == GDK_KEY_Super_L) || (event->keyval == GDK_KEY_Super_R))
-#endif
 	{
 		gint keyval = event->keyval;
 
@@ -2853,9 +2699,7 @@ void set_markup_key_value(gboolean bold, gchar *color, gchar *key_value, GtkWidg
 		color, key_value, label);
 #endif
 
-#ifdef SAFEMODE
 	if (label==NULL) return;
-#endif
 
 	gchar *markup_text;
 	if (bold)
@@ -2872,24 +2716,16 @@ gchar *deal_dialog_key_press_join_string(StrAddr **key_value, gchar *separator, 
 #ifdef DETAIL
 	g_debug("! Launch deal_dialog_key_press_join_string() with key_value = %s, separator = %s, append = %s", *key_value, separator, append);
 #endif
-#ifdef SAFEMODE
 	if ((separator==NULL) || (append==NULL)) return *key_value;
-#endif
 
 	gchar *join_string = NULL;
-#ifdef SAFEMODE
 	if (*key_value && ((*key_value)[0]!='\0'))
-#else
-	if ((*key_value)[0]!='\0')
-#endif
 		join_string = g_strdup_printf("%s%s%s",*key_value, separator, append);
 	else
 		join_string = g_strdup(append);
 
 	g_free(*key_value);
-#ifdef SAFEMODE
 	*key_value = NULL;
-#endif
 	return join_string;
 }
 
@@ -2899,9 +2735,7 @@ void adjust_vte_color_sample(GtkColorButton* color_button, gint color_index)
 #  ifdef DETAIL
 	g_debug("! Launch adjust_vte_color_sample() with color_button = %p, color_index = %d", color_button, color_index);
 #  endif
-#  ifdef SAFEMODE
 	if (color_button==NULL) return;
-#  endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(real_menu_active_window), "Win_Data");
 	win_data->temp_index = get_color_index(win_data->invert_color, color_index);
 
@@ -2918,9 +2752,7 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 #ifdef DETAIL
 	g_debug("! Launch adjust_vte_color() with color_selection = %p, color = %p, vte = %p", color_selection, color, vte);
 #endif
-#ifdef SAFEMODE
 	if (vte==NULL) return;
-#endif
 	GdkRGBA final_color;
 #ifdef USE_OLD_GTK_COLOR_SELECTION
 	if (color_selection) gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(color_selection), &final_color);
@@ -2933,9 +2765,7 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 	// g_debug("Changing the color for vte %p", vte);
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
 	// g_debug("Get dialog_data = %p", dialog_data);
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 
 	switch (dialog_data->type)
 	{
@@ -2943,17 +2773,11 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 		case CHANGE_THE_BACKGROUND_COLOR:
 		case CHANGE_THE_ANSI_COLORS:
 		{
-#ifdef SAFEMODE
 			if (vte==NULL) return;
-#endif
 			struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 			if ((page_data==NULL) || (page_data->window==NULL)) return;
-#endif
 			struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-#ifdef SAFEMODE
 			if (win_data==NULL) return;
-#endif
 			gint converted_index = get_color_index(win_data->invert_color, win_data->temp_index);
 			// g_debug("adjust_vte_color(): win_data->temp_index = %d, converted_index = %d", win_data->temp_index, converted_index);
 
@@ -3027,17 +2851,11 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 		}
 		case CHANGE_THE_CURSOR_COLOR:
 		{
-#ifdef SAFEMODE
 			if (vte==NULL) return;
-#endif
 			struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 			if ((page_data==NULL) || (page_data->window==NULL)) return;
-#endif
 			struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-#ifdef SAFEMODE
 				if (win_data==NULL) return;
-#endif
 #ifdef USE_OLD_GTK_COLOR_SELECTION
 			//   [Cancel] is pressed       [OK] is pressed
 			if ((dialog_data->recover) || (color_selection==NULL))
@@ -3062,17 +2880,13 @@ void adjust_vte_color(GtkColorChooser *color_selection, GdkRGBA *color, GtkWidge
 			current_color = dirty_gdk_rgba_to_string(&(final_color));
 #endif
 			struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 			if (page_data)
-#endif
 				update_page_name(page_data->window, vte, NULL, page_data->label_text, 1,
 						  _("Bold Demo Text"), current_color, FALSE, TRUE, FALSE, NULL,
 						  page_data->custom_window_title, FALSE);
 
 			page_data = (struct Page *)g_object_get_data(G_OBJECT(dialog_data->demo_vte), "Page_Data");
-#ifdef SAFEMODE
 			if (page_data)
-#endif
 				update_page_name(page_data->window, dialog_data->demo_vte, NULL,
 						 page_data->label_text, page_data->page_no+1,
 						 dialog_data->demo_text, current_color, FALSE, FALSE,
@@ -3096,15 +2910,11 @@ void recover_page_colors(GtkWidget *dialog_window, GtkWidget *window, GtkWidget 
 	g_debug("! Launch recover_page_colors() in window %p", window);
 #endif
 
-#ifdef SAFEMODE
 	if ((dialog_window==NULL) || (window==NULL)) return;
-#endif
 
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(window), "Win_Data");
-#ifdef SAFEMODE
 	if ((dialog_data==NULL) || (win_data==NULL)) return;
-#endif
 	gint i;
 	struct Page *page_data = NULL;
 
@@ -3119,17 +2929,13 @@ void recover_page_colors(GtkWidget *dialog_window, GtkWidget *window, GtkWidget 
 	for (i=PAGE_COLOR; i>=dialog_data->total_page; i--)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data)
-#endif
 			close_page (page_data->vte, CLOSE_WITH_WINDOW_CLOSE_BUTTON);
 	}
 	win_data->kill_color_demo_vte = FALSE;
 
 	// reset to the current page
-#ifdef SAFEMODE
 	if (notebook)
-#endif
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), dialog_data->current_page_no);
 
 	// recover the title/color of pages
@@ -3156,15 +2962,11 @@ gboolean check_and_add_locale_to_warned_locale_list(struct Window *win_data, gch
 	g_debug("! Launch check_and_add_locale_to_warned_locale_list() with win_data = %p, new_locale = %s!",
 		win_data, new_locale);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (new_locale==NULL) ||
 	    (win_data->warned_locale_list == NULL) ||
 	    (win_data->warned_locale_list->str == NULL)) return TRUE;
-#endif
 	gchar *check_locale = g_strdup_printf(" %s ", new_locale);
-#ifdef SAFEMODE
 	if (check_locale==NULL) return TRUE;
-#endif
 	gboolean response = TRUE;
 
 	// g_debug("check_and_add_locale_to_warned_locale_list(): win_data->warned_locale_list = %p",
@@ -3245,9 +3047,7 @@ void print_switch_out_of_range_error_dialog(gchar *function, gchar *var, gint va
 	gchar *err_msg = g_strdup_printf("%s(): the var \"%s\" (%d) is out of range\n\n"
 					 "Please report bug to %s, Thanks!",
 					 function, var, value, BUGREPORT);
-#ifdef SAFEMODE
 	if (err_msg)
-#endif
 		error_dialog(NULL, _("The following error occurred:"),
 			     "The following error occurred:",
 			     GTK_FAKE_STOCK_DIALOG_ERROR, err_msg, NULL);
@@ -3274,18 +3074,12 @@ gboolean set_ansi_color(GtkRange *range, GtkScrollType scroll, gdouble value, Gt
 		range, scroll, value, vte);
 #endif
 
-#ifdef SAFEMODE
 	if (vte==NULL) return FALSE;
-#endif
 	struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 	if ((page_data==NULL) || (page_data->window==NULL)) return FALSE;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window),
 								     "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 
 	value = CLAMP(value, -1, 1);
 	win_data->color_brightness = value;
@@ -3293,9 +3087,7 @@ gboolean set_ansi_color(GtkRange *range, GtkScrollType scroll, gdouble value, Gt
 	//	win_data->color_brightness, win_data->color_brightness_inactive);
 
 	struct Dialog *dialog_data = (struct Dialog *)g_object_get_data(G_OBJECT(real_menu_active_window), "Dialog");
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return FALSE;
-#endif
 	// We will not adject the value of fg_color
 	// win_data->fg_color = get_inactive_color(dialog_data->original_fg_color,
 	//					win_data->color_brightness,
@@ -3334,9 +3126,7 @@ void set_new_ansi_color(GtkWidget *vte, GdkRGBA color[COLOR], GdkRGBA color_orig
 	g_debug("! Launch set_new_ansi_color() with vte = %p, color_brightness = %3f, invert_color = %d, default_vte_color = %d",
 		vte, color_brightness, invert_color, default_vte_color);
 #endif
-#ifdef SAFEMODE
 	if ((vte==NULL) || (color_orig==NULL) || (color==NULL)) return;
-#endif
 	create_theme_color_data(color, color_orig, color_brightness, invert_color, default_vte_color, dim_fg_color);
 	set_vte_color(vte, default_vte_color, custom_cursor_color, cursor_color, color, FALSE, FALSE);
 }
@@ -3348,9 +3138,7 @@ void hide_combo_box_capital(GtkCellLayout *cell_layout, GtkCellRenderer *cell,
 	g_debug("! Launch hide_combo_box_capital() with cell_layout = %p, cell = %p, tree_model = %p, iter = %p!",
 		cell_layout, cell, tree_model, iter);
 #endif
-#ifdef SAFEMODE
 	if ((tree_model==NULL) || (iter==NULL)) return;
-#endif
 	g_object_set (cell, "sensitive", !gtk_tree_model_iter_has_child(tree_model, iter), NULL);
 }
 
@@ -3359,9 +3147,7 @@ void update_key_info (GtkTreeSelection *treeselection, struct Dialog *dialog_dat
 #ifdef DETAIL
 	g_debug("! Launch update_key_info() with treeselection = %p, dialog_data = %p!", treeselection, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if ((dialog_data==NULL) || (treeselection==NULL)) return;
-#endif
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(gtk_tree_selection_get_tree_view(GTK_TREE_SELECTION (treeselection)));
 	GtkTreePath *path = NULL;
@@ -3376,10 +3162,8 @@ void update_key_info (GtkTreeSelection *treeselection, struct Dialog *dialog_dat
 		string = gtk_tree_path_to_string (path);
 		// g_debug ("update_key_info(): got string = %s", string);
 		indices = split_string(string, ":", -1);
-#ifdef SAFEMODE
 		if (indices)
 		{
-#endif
 			if (indices[0]==NULL) goto FINISH;
 			if (indices[1]==NULL)
 			{
@@ -3413,9 +3197,7 @@ void update_key_info (GtkTreeSelection *treeselection, struct Dialog *dialog_dat
 						      group_name);
 		gtk_button_set_label(GTK_BUTTON(dialog_data->operate[3]), disable_text);
 		g_free(disable_text);
-#ifdef SAFEMODE
 		}
-#endif
 	}
 
 FINISH:
@@ -3430,9 +3212,7 @@ void clear_key_groups(struct Dialog *dialog_data, gboolean clear_all)
 #ifdef DETAIL
 	g_debug("! Launch clear_key_groups() with dialog_data = %p, clear_all = %d!", dialog_data, clear_all);
 #endif
-#ifdef SAFEMODE
 	if ((dialog_data==NULL) || (dialog_data->treeview==NULL))return;
-#endif
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(dialog_data->treeview));
 	GtkTreeSelection *treeselection = gtk_tree_view_get_selection (GTK_TREE_VIEW(dialog_data->treeview));
 	GtkTreeIter iter_child;
@@ -3482,17 +3262,13 @@ void clear_key_groups(struct Dialog *dialog_data, gboolean clear_all)
 		{
 			if (gtk_tree_model_iter_nth_child (model, &iter, &iter_parent, i))
 				gtk_tree_store_set (GTK_TREE_STORE (model), &iter, 1, "", -1);
-#ifdef SAFEMODE
 			else
 				break;
-#endif
 		}
 	}
 
-#ifdef SAFEMODE
 	// it should be happen...
 	if ((clear_all== FALSE) && (current_key_group < 0)) return;
-#endif
 
 	gint i;
 	for (i=0; i<KEYS; i++)
@@ -3510,9 +3286,7 @@ gboolean clean_model_foreach(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter
 #ifdef DETAIL
 	g_debug("! Launch clean_model_foreach() with model= %p, path = %p, iter = %p!", model, path, iter);
 #endif
-#ifdef SAFEMODE
 	if (model==NULL) return FALSE;
-#endif
 	if (gtk_tree_model_iter_has_child (model, iter) == FALSE)
 		gtk_tree_store_set (GTK_TREE_STORE (model), iter, 1, "", -1);
 	return FALSE;
@@ -3541,13 +3315,9 @@ GtkWidget *add_text_to_notebook(GtkWidget *notebook, const gchar *label, const g
 	g_debug("! Launch add_text_to_notebook() with notebook = %p, label = %s, stock_id = %s, text = %s",
 		notebook, label, stock_id, text);
 #endif
-#ifdef SAFEMODE
 	if (notebook==NULL) return NULL;
-#endif
 	GtkWidget *text_label = create_label_with_text(NULL, TRUE, TRUE, 0, text);
-#ifdef SAFEMODE
 	if (text_label==NULL) return NULL;
-#endif
 		set_widget_can_not_get_focus(text_label);
 
 	GtkWidget *hbox = dirty_gtk_hbox_new(FALSE, 0);
@@ -3573,15 +3343,11 @@ void show_usage_text(GtkWidget *notebook, gpointer page, guint page_num, struct 
 	g_debug("! Launch show_usage_text() with notebook = %p, page = %p, page_num = %d, dialog_data = %p",
 		notebook, page, page_num, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 	gint i;
 	for (i=0; i<5; i++)
 	{
-#ifdef SAFEMODE
 		if (dialog_data->operate[i]==NULL) continue;
-#endif
 		if (i==page_num)
 			gtk_widget_set_no_show_all(dialog_data->operate[i], FALSE);
 		else
@@ -3590,9 +3356,7 @@ void show_usage_text(GtkWidget *notebook, gpointer page, guint page_num, struct 
 			gtk_widget_hide(dialog_data->operate[i]);
 		}
 	}
-#ifdef SAFEMODE
 	if (dialog_data->window)
-#endif
 		gtk_widget_show_all(dialog_data->window);
 }
 
@@ -3624,9 +3388,7 @@ void create_dialog(gchar *dialog_title_translation, gchar *dialog_title,  Dialog
 		border_width, response, icon, title, selectable, max_width_chars, state_bottom,
 		create_entry_hbox, dialog_data);
 #endif
-#ifdef SAFEMODE
 	if (dialog_data==NULL) return;
-#endif
 #ifdef USE_GTK_COLOR_CHOOSER
 	switch (dialog_data->type)
 	{

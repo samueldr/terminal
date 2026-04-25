@@ -4,7 +4,6 @@
 #	make clean: delete terminal binary files.
 #	make dev: compile terminal_dev with CLAGS -g.
 #	make vdev: compile terminal_dev with full compiling command message.
-#	make ddev: compile terminal_dev with -DSAFEMODE compile option.
 #	make ut: run a tiny unit testing script with gdb debug information.
 #	make uto: build *.o binary files for using in the unit testing programs.
 #	make utb: build the the unit testing programs only.
@@ -98,11 +97,6 @@ all: default
 	$(VERBOSITY_OUTPUT) $(STRIP) --remove-section=.comment --remove-section=.note $(BINARY)
 
 .PHONY: default
-ifneq ($(SAFEMODE), N)
-default: CFLAGS += -DSAFEMODE
-else
-$(error No "REALMODE" anymore...)
-endif
 default: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DVERSION=\"$(VERSION)\ \($(date)\)\"
 default: INCLUDES += -DFATAL
 default: $(BINARY)
@@ -127,14 +121,6 @@ vdev: verbosity-output
 .PHONY: verbosity-output
 verbosity-output: VERBOSITY_OUTPUT :=
 verbosity-output: develop
-
-.PHONY: ddev
-ddev: defensive-develop
-.PHONY: defensive-develop
-defensive-develop: CFLAGS := $(CFLAGS) -g
-defensive-develop: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(AUTHOR_CONVERT)\" -DSAFEMODE -DFATAL -DVERSION=\"$(VERSION)\ Develop\ Version\ \($(date)\)\"
-defensive-develop: BINARY := $(BINARY)_dev
-defensive-develop: $(BINARY)
 
 .PHONY: detail
 detail: CFLAGS := $(CFLAGS) -g
@@ -164,7 +150,7 @@ pagename: $(BINARY)
 ut: unit_test
 .PHONY: unit_test
 unit_test: CFLAGS := $(CFLAGS) -g
-unit_test: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-gdb --test_all
 
@@ -172,14 +158,14 @@ unit_test: $(OBJ)
 uto: unit_test_object
 .PHONY: unit_test_object
 unit_test_object: CFLAGS := $(CFLAGS) -g
-unit_test_object: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_object: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_object: $(OBJ)
 
 .PHONY: utb
 utb: unit_test_build
 .PHONY: unit_test_build
 unit_test_build: CFLAGS := $(CFLAGS) -g
-unit_test_build: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_build: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_build: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --build_program_only
 
@@ -187,7 +173,7 @@ unit_test_build: $(OBJ)
 utd: unit_test_debug
 .PHONY: unit_test_debug
 unit_test_debug: CFLAGS := $(CFLAGS) -g
-unit_test_debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DSAFEMODE -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_debug: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DGEOMETRY -DPAGENAME -DFATAL -DDETAIL -DFULL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_debug: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-glib-debugger --enable-gtk-debugger --enable-gdb
 
@@ -195,7 +181,7 @@ unit_test_debug: $(OBJ)
 utf: unit_test_full
 .PHONY: unit_test_full
 unit_test_full: CFLAGS := $(CFLAGS) -g
-unit_test_full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DSAFEMODE -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
+unit_test_full: INCLUDES := $(INCLUDES) -DAUTHOR=\"$(PACKAGE)\" -DFATAL -DUNIT_TEST -DVERSION=\"$(VERSION)_UNIT_TEST_$(date)\"
 unit_test_full: $(OBJ)
 	@ sh unit_test.sh "$(INCLUDES)" --enable-glib-debugger --enable-gtk-debugger --enable-gdb --enable-valgrind
 

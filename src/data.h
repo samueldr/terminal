@@ -31,8 +31,6 @@
 # include "config.h"
 #endif
 
-#define SAFEMODE
-
 //
 // **************************** data.h ****************************
 //

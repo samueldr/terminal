@@ -29,15 +29,11 @@ void command_option(int   argc,
 	g_debug("! Launch command_option()!");
 #endif
 
-#ifdef SAFEMODE
 	if (argv==NULL) return;
-#endif
 	gint i;
 	for (i=0; i<argc; i++)
 	{
-#ifdef SAFEMODE
 		if (argv[i]==NULL) break;
-#endif
 		// g_debug("%2d (Total %d): %s",i, argc, argv[i]);
 		if ((!strcmp(argv[i], "-v")) || (!strcmp(argv[i], "--version")))
 		{
@@ -60,9 +56,7 @@ void command_option(int   argc,
 		{
 #ifdef ENABLE_PROFILE
 			GString *settings = save_user_settings(NULL, NULL);
-#  ifdef SAFEMODE
 			if (settings)
-#  endif
 				g_print("%s", settings->str);
 			g_string_free(settings, TRUE);
 #else
@@ -111,15 +105,11 @@ gchar *get_help_message(gchar *profile)
 #endif
 	GString *help_message = g_string_new(NULL);
 	gchar *usage = get_help_message_usage(profile, FALSE);
-#ifdef SAFEMODE
 	if (usage)
-#endif
 		g_string_append(help_message, usage);
 
 	gchar *key_binding = get_help_message_key_binding(FALSE);
-#ifdef SAFEMODE
 	if (key_binding)
-#endif
 		g_string_append(help_message,  key_binding);
 
 	g_string_append(help_message, "\n");
@@ -171,22 +161,16 @@ gchar *get_help_message_usage(gchar *profile, gboolean convert_to_html)
 		current_profile = g_strdup(profile);
 	else
 		current_profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
-#ifdef SAFEMODE
 	if (current_profile)
 	{
-#endif
 		if (convert_to_html)
 		{
 			gchar *msg_str = g_string_free(help_message, FALSE);
 			gchar *new_help_message = convert_text_to_html (&msg_str, TRUE, NULL, "tt", NULL);
-#ifdef SAFEMODE
 			if (new_help_message)
-#endif
 				help_message = g_string_new(new_help_message);
-#ifdef SAFEMODE
 			else
 				help_message = g_string_new("");
-#endif
 			g_free(new_help_message);
 			current_profile = convert_text_to_html (&current_profile, TRUE,  "darkgreen", "tt", NULL);
 		}
@@ -198,26 +182,18 @@ gchar *get_help_message_usage(gchar *profile, gboolean convert_to_html)
 		}
 
 		gchar *profile_message = g_strdup_printf(_("And your %s profile is: "), PACKAGE);
-#ifdef SAFEMODE
 		if (profile_message)
-#endif
 			if (convert_to_html)
 				profile_message =  convert_text_to_html(&profile_message, TRUE, NULL, "tt", NULL);
 
 		// g_debug("FINAL: profile_message = %s", profile_message);
 
-#ifdef SAFEMODE
 		if (profile_message)
-#endif
 			g_string_append(help_message, profile_message);
-#ifdef SAFEMODE
 		if (current_profile)
-#endif
 			g_string_append(help_message, current_profile);
 		g_free(profile_message);
-#ifdef SAFEMODE
 	}
-#endif
 
 	g_free(current_profile);
 	return g_string_free(help_message, FALSE);

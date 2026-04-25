@@ -30,9 +30,7 @@ void create_theme_color_data(GdkRGBA color[COLOR], GdkRGBA color_orig[COLOR], gd
 	g_debug("! Launch create_theme_color_data() with color = %p, color_orig = %p, color_brightness = %3f, invert_color = %d",
 		color, color_orig, color_brightness, invert_color);
 #endif
-#ifdef SAFEMODE
 	if ((color==NULL) || (color_orig==NULL)) return;
-#endif
 	if (! default_vte_theme)
 	{
 		// g_debug("Get win_data = %d when set background saturation!", win_data);
@@ -66,9 +64,7 @@ void adjust_ansi_color(GdkRGBA *color, GdkRGBA *color_orig, gdouble color_bright
 	g_debug("! Launch adjust_ansi_color() with color = %p, color_orig = %p, color_brightness = %3f",
 		color, color_orig, color_brightness);
 #endif
-#ifdef SAFEMODE
 	if ((color==NULL) || (color_orig==NULL)) return;
-#endif
 	if (color_brightness>=0)
 	{
 		color->red = (MAX_COLOR - color_orig->red) * color_brightness + color_orig->red;
@@ -88,9 +84,7 @@ void generate_all_color_datas(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch generate_all_color_datas() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	GdkRGBA *temp_color = get_current_color_theme(win_data);
 
 	gboolean default_vte_theme = use_default_vte_theme(win_data);
@@ -103,9 +97,7 @@ GdkRGBA *get_current_color_theme(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch current_color_theme() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
-#endif
 	// g_debug("win_data->use_custom_theme = %d", win_data->use_custom_theme);
 	if (win_data->use_custom_theme)
 		return win_data->custom_color_theme[win_data->color_theme_index].color;
@@ -124,31 +116,23 @@ void init_new_page(struct Window *win_data,
 	g_debug("! Launch init_new_page() with win_data = %p, page_data = %p, "
 		" column = %ld, row = %ld", win_data, page_data, column, row);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->vte==NULL)) return;
-#endif
 	// g_debug("Get win_data = %d when initing new page!", win_data);
 
-#ifdef SAFEMODE
 	if (page_data->font_name)
 	{
-#endif
 		// set font
 		// g_debug("Set Font AA = %d", win_data->font_anti_alias);
 		fake_vte_terminal_set_font_from_string (page_data->vte,
 							page_data->font_name,
 							win_data->font_anti_alias);
-#ifdef SAFEMODE
 	}
-#endif
 	//g_debug("Got font size from %s: %d", font_name, pango_font_description_get_size (
 	//	  pango_font_description_from_string(font_name))/PANGO_SCALE);
 
 	// set terminal size
 	// g_debug("Set the vte size to: %dx%d", column, row);
-#ifdef SAFEMODE
 	if (page_data->vte)
-#endif
 		vte_terminal_set_size(VTE_TERMINAL(page_data->vte), column, row);
 
 #ifdef GEOMETRY
@@ -199,9 +183,7 @@ void set_cursor_blink(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch set_cursor_blink() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->vte==NULL)) return;
-#endif
 	// g_debug("set_cursor_blink(): win_data->cursor_blinks = %d", win_data->cursor_blinks);
 
 
@@ -217,9 +199,7 @@ void set_hyperlink(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch set_hyperlink() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->vte==NULL)) return;
-#endif
 	if (win_data->enable_hyperlink && win_data->enable_key_binding)
 	{
 		if (page_data->match_regex_setted) clean_hyperlink(win_data, page_data);
@@ -265,9 +245,7 @@ void clean_hyperlink(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch clean_hyperlink() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->vte==NULL)) return;
-#endif
 	if (! page_data->match_regex_setted) return;
 
 	page_data->match_regex_setted = FALSE;
@@ -281,9 +259,7 @@ void enable_custom_cursor_color(GtkWidget *vte, gboolean custom_cursor_color, Gd
 	g_debug("! Launch enable_custom_cursor_color() with vte = %p, custom_cursor_color = %d, cursor_color = %p",
 		vte, custom_cursor_color, cursor_color);
 #endif
-#ifdef SAFEMODE
 	if (vte==NULL) return;
-#endif
 	if (custom_cursor_color)
 		vte_terminal_set_color_cursor_rgba(VTE_TERMINAL(vte), cursor_color);
 	else
@@ -297,9 +273,7 @@ void set_vte_color(GtkWidget *vte, gboolean default_vte_color, gboolean custom_c
 	g_debug("! Launch set_vte_color() with vte = %p, default_vte_color_theme = %d,  color = %p",
 		vte, default_vte_color, color);
 #endif
-#ifdef SAFEMODE
 	if ((vte==NULL) || (color ==NULL)) return;
-#endif
 	if (over_16_colors)
 	{
 		vte_terminal_set_default_colors(VTE_TERMINAL(vte));
@@ -336,9 +310,7 @@ gboolean use_default_vte_theme(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch use_default_vte_theme() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return TRUE;
-#endif
 	return ! (win_data->color_theme_index || win_data->invert_color || win_data->color_brightness || win_data->color_brightness_inactive);
 }
 
@@ -347,9 +319,7 @@ void set_page_width(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch set_page_width() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->label_text==NULL)) return;
-#endif
 #ifdef HAVE_GTK_LABEL_SET_WIDTH_CHARS
 	gtk_label_set_width_chars(GTK_LABEL(page_data->label_text), win_data->page_width);
 #endif
@@ -360,9 +330,7 @@ void pack_vte_and_scroll_bar_to_hbox(struct Window *win_data, struct Page *page_
 #ifdef DETAIL
 	g_debug("! Launch pack_vte_and_scroll_bar_to_hbox() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->hbox==NULL)) return;
-#endif
 	if (win_data->scroll_bar_position)
 	{
 		gtk_box_pack_start(GTK_BOX(page_data->hbox), page_data->vte, TRUE, TRUE, 0);
@@ -382,9 +350,7 @@ gboolean check_show_or_hide_scroll_bar(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch check_show_or_hide_scroll_bar() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	gboolean show = FALSE;
 	// g_debug("check_show_or_hide_scroll_bar(): win_data->show_scroll_bar = %d", win_data->show_scroll_bar);
 	switch (win_data->show_scroll_bar)
@@ -421,9 +387,7 @@ void show_and_hide_scroll_bar(struct Page *page_data, gboolean show_scroll_bar)
 #ifdef DETAIL
 	g_debug("! Launch hide_scroll_bar() with page_data = %p", page_data);
 #endif
-#ifdef SAFEMODE
 	if ((page_data==NULL) || (page_data->scroll_bar==NULL)) return;
-#endif
 	if (show_scroll_bar)
 		gtk_widget_show (page_data->scroll_bar);
 	else
@@ -435,9 +399,7 @@ void add_remove_page_timeout_id(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch add_remove_page_timeout_id() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL)) return;
-#endif
 	if (page_data->timeout_id)
 	{
 		g_source_remove (page_data->timeout_id);
@@ -460,9 +422,7 @@ void add_remove_window_title_changed_signal(struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch add_remove_window_title_changed_signal() with page_data = %p", page_data);
 #endif
-#ifdef SAFEMODE
 	if (page_data==NULL) return;
-#endif
 	if (page_data->page_shows_window_title)
 		page_data->window_title_signal = g_signal_connect(page_data->vte, "window-title-changed",
 								  G_CALLBACK(update_page_window_title), page_data);
@@ -480,9 +440,7 @@ gboolean set_window_opacity(GtkRange *range, GtkScrollType scroll, gdouble value
 #ifdef DETAIL
 	g_debug("! Launch set_window_opacity() with value = %f, win_data = %p", value, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	// g_debug("Get win_data = %d when set window opacity!", win_data);
 
 	value = CLAMP(value, 0, 1);
@@ -506,9 +464,7 @@ void window_resizable(GtkWidget *window, GtkWidget *vte, Hints_Type hints_type)
 	fprintf(stderr, "\033[1;31m** Launch window_resizable() with window = %p, vte = %p, hints_type = %d\033[0m\n",
 		window, vte, hints_type);
 #endif
-#ifdef SAFEMODE
 	if ((window==NULL) || (vte==NULL)) return;
-#endif
 
 	// DIRTY HACK: don't run window_resizable too much times before window is shown!
 	if ((hints_type != HINTS_FONT_BASE) && (gtk_widget_get_mapped(window) == FALSE)) return;
@@ -583,9 +539,7 @@ void get_hint_min_size(GtkWidget *notebook, GtkWidget *scrollbar, gint *min_widt
 #ifdef DETAIL
 	g_debug("! Launch get_hint_min_size() with notebook = %p, scrollbar = %p", notebook, scrollbar);
 #endif
-#ifdef SAFEMODE
 	if ((scrollbar==NULL) || (scrollbar==NULL) || (min_width==NULL) || (min_height==NULL)) return;
-#endif
 #ifdef USE_GTK3_GEOMETRY_METHOD
 	gtk_widget_get_preferred_width(GTK_WIDGET(notebook), min_width, NULL);
 	gtk_widget_get_preferred_height(GTK_WIDGET(notebook), min_height, NULL);
@@ -615,27 +569,17 @@ void fake_vte_terminal_get_padding(VteTerminal *vte, gint *width, gint *height)
 #ifdef DETAIL
 	g_debug("! Launch fake_vte_terminal_get_padding() with vte = %p", vte);
 #endif
-#ifdef SAFEMODE
 	if ((vte==NULL) || (width==NULL) || (height==NULL)) return;
-#endif
 #  ifdef VTE_HAS_INNER_BORDER
 	GtkBorder *inner_border = NULL;
 	gtk_widget_style_get(GTK_WIDGET(vte), "inner-border", &inner_border, NULL);
-#    ifdef SAFEMODE
 	if (inner_border)
 	{
-#    endif
-#  ifdef SAFEMODE
 		if (width)
-#  endif
 			*width = inner_border->left + inner_border->right;
-#  ifdef SAFEMODE
 		if (height)
-#  endif
 			*height = inner_border->top + inner_border->bottom;
-#    ifdef SAFEMODE
 	}
-#    endif
 	gtk_border_free (inner_border);
 #  else
 	*width = 0;
@@ -652,9 +596,7 @@ void apply_new_win_data_to_page (struct Window *win_data_orig,
 	g_debug("! Launch apply_new_win_data_to_page() with win_data_orig = %p, win_data = %p, page_data = %p",
 		win_data_orig, win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data_orig==NULL) || (win_data==NULL) || (page_data==NULL) || (page_data->vte==NULL)) return;
-#endif
 	// if (win_data_orig->use_rgba != win_data->use_rgba)
 	//	init_rgba(win_data);
 #ifdef ENABLE_RGBA
@@ -835,10 +777,8 @@ gboolean compare_color(GdkRGBA *a, GdkRGBA *b)
 	g_debug("! Launch compare_color()!");
 #endif
 
-#ifdef SAFEMODE
 	if ((a==NULL) && (b==NULL)) return FALSE;
 	if ((a==NULL) || (b==NULL)) return TRUE;
-#endif
 	// g_debug("compare_color(): Comparing %04X %04X %04X %04X and %04X %04X %04X %04X",
 	//	a->pixel, a->red, a->green, a->blue, b->pixel, b->red, b->green, b->blue);
 	// g_debug("compare_color(): Comparing %0.4f %0.4f %0.4f and %0.4f %0.4f %0.4f",
@@ -857,22 +797,16 @@ void set_widget_thickness(GtkWidget *widget, gint thickness)
 	g_debug("! Launch set_widget_thickness() with widget = %p, thickness = %d!", widget, thickness);
 #endif
 
-#ifdef SAFEMODE
 	if (widget==NULL) return;
-#endif
 
 #ifdef USING_OLD_GTK_RC_STYLE_NEW
 
 	GtkRcStyle *rc_style = gtk_rc_style_new();
-#  ifdef SAFEMODE
 	if (rc_style)
 	{
-#  endif
 		rc_style->xthickness = rc_style->ythickness = thickness;
 		gtk_widget_modify_style(widget, rc_style);
-#  ifdef SAFEMODE
 	}
-#  endif
 	g_object_unref(rc_style);
 #else
 	GtkCssProvider *css = gtk_css_provider_new();

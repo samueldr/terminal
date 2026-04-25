@@ -77,9 +77,7 @@ gchar *convert_array_to_string(gchar **array, gchar separator)
 #ifdef DETAIL
 	g_debug("! Launch convert_array_to_string()");
 #endif
-#ifdef SAFEMODE
 	if (array==NULL) return NULL;
-#endif
 	GString *array_str = g_string_new (NULL);
 	gint i=0;
 
@@ -358,9 +356,7 @@ void set_env(const gchar *variable, const gchar *value, gboolean overwrite)
 #ifdef DETAIL
 	g_debug("! Launch set_env() with variable = %s, value = %s, overwrite = %d", variable, value, overwrite);
 #endif
-#ifdef SAFEMODE
 	if ((variable==NULL) || (variable[0]=='\0')) return;
-#endif
 	if (value)
 		g_setenv(variable, value, overwrite);
 	else
@@ -425,9 +421,7 @@ gboolean check_string_in_array(gchar *str, gchar **lists)
 #ifdef DETAIL
 	g_debug("! Launch check_string_in_array() with str = %s", str);
 #endif
-#ifdef SAFEMODE
 	if ((str==NULL) || (lists==NULL)) return FALSE;
-#endif
 	gint i=-1;
 
 	while (lists[++i])
@@ -549,9 +543,7 @@ gchar **split_string(const gchar *str, const gchar *split, gint max_tokens)
 #ifdef FULL
 	g_debug("! Launch split_string with str = %s, split = %s, max_tokens = %d", str, split, max_tokens);
 #endif
-#ifdef SAFEMODE
 	if ((str==NULL) || (split==NULL) || (split[0]=='\0')) return NULL;
-#endif
 	// g_debug("contents = %s", contents);
 	gchar **datas = g_strsplit_set(str, split, max_tokens);
 	gint i = -1;
@@ -560,11 +552,7 @@ gchar **split_string(const gchar *str, const gchar *split, gint max_tokens)
 	//	g_debug("Got data[%d] = %s", i, datas[i]);
 	// g_debug("Got i = %d in split_string()", i);
 	// i = -1;
-#ifdef SAFEMODE
 	if (datas && (max_tokens>0))
-#else
-	if (max_tokens>0)
-#endif
 	{
 		while (datas[++i]);
 		if (i<max_tokens)
@@ -613,9 +601,7 @@ gchar *convert_text_to_html(StrAddr **text, gboolean free_text, gchar *color, St
 	g_debug("! Launch convert_text_to_html() with text = %s, color = %s, tag = %s",
 		*text, color, tag);
 #endif
-#ifdef SAFEMODE
 	if ((text==NULL) || (*text==NULL)) return NULL;
-#endif
 	gchar *markup_escape_text = g_markup_escape_text(*text, -1);
 
 	if (color)
@@ -641,9 +627,7 @@ gchar *convert_text_to_html(StrAddr **text, gboolean free_text, gchar *color, St
 	if (free_text)
 	{
 		g_free(*text);
-#ifdef SAFEMODE
 		*text = NULL;
-#endif
 	}
 	return markup_escape_text;
 }
@@ -655,9 +639,7 @@ gchar *join_strings_to_string(const gchar separator, const gint total, const Str
 	g_debug("! Launch join_strings_to_string() with separator = '%c', total = %d",
 		separator, total);
 #endif
-#ifdef SAFEMODE
 	if (separator=='\0') return NULL;
-#endif
 	GString *strings = g_string_new ("");
 	gint i;
 	va_list arg_ptr;
@@ -807,9 +789,7 @@ GdkColor convert_rgba_to_color(GdkRGBA rgba)
 // The returned string should be freed when no longer needed.
 gchar *dirty_gdk_rgba_to_string(GdkRGBA *rgba)
 {
-#ifdef SAFEMODE
 	if (rgba==NULL) return NULL;
-#endif
 #  ifdef USE_GDK_RGBA
 	return g_strdup_printf("#%04x%04x%04x", (unsigned int)(rgba->red*0xFFFF), (unsigned int)(rgba->green*0xFFFF), (unsigned int)(rgba->blue*0xFFFF));
 #  else
@@ -826,9 +806,7 @@ void widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation, gchar *
 #  endif
 	// 200x200: the default size of a GtkWindow
 	gint ansi_color = ANSI_COLOR_BLACK;
-#ifdef SAFEMODE
 	if (allocation==NULL) return;
-#endif
 	if ((allocation->width <= 200) || (allocation->height <= 200))
 		ansi_color = ANSI_COLOR_RED;
 	fprintf(stderr, "\033[1;%dm!! %s_size_allocate(%p): the allocated size is %d x %d\033[0m\n",

@@ -68,9 +68,7 @@ GtkNotebook *new_window(int argc,
 	print_array("! Launch new_window() with argv", argv);
 #endif
 	struct Window *win_data = g_new0(struct Window, 1);
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
-#endif
 	// g_debug("new_window(): Append win_data(%p) to window_list!", win_data);
 	window_list = g_list_append (window_list, win_data);
 
@@ -93,18 +91,14 @@ GtkNotebook *new_window(int argc,
 
 	win_data->home = g_strdup(HOME);
 	win_data->init_dir = get_init_dir(-1, PWD, HOME);
-#ifdef SAFEMODE
 	if (win_data->init_dir)
 	{
-#endif
 		if (g_chdir(win_data->init_dir))
 		{
 			g_free(win_data->init_dir);
 			win_data->init_dir = NULL;
 		}
-#ifdef SAFEMODE
 	}
-#endif
 
 	if (shell && shell[0]!='\0')
 		win_data->shell = g_strdup(shell);
@@ -123,11 +117,7 @@ GtkNotebook *new_window(int argc,
 	if ((wmclass_class == NULL) || (wmclass_class[0]=='\0')) wmclass_class = PACKAGE;
 	win_data->wmclass_name = g_strdup(wmclass_name);
 	win_data->wmclass_class = g_strdup(wmclass_class);
-#ifdef SAFEMODE
 	if ((wmclass_class) && (wmclass_class[0]>='a') && (wmclass_class[0]<='z'))
-#else
-	if ((wmclass_class[0]>='a') && (wmclass_class[0]<='z'))
-#endif
 		win_data->wmclass_class[0] += ('A' - 'a');
 	gtk_window_set_wmclass(GTK_WINDOW(win_data->window), win_data->wmclass_name, win_data->wmclass_class);
 
@@ -149,9 +139,7 @@ GtkNotebook *new_window(int argc,
 			// g_debug("new_window(1): Remove win_data(%p) from window_list!", win_data);
 			window_list = g_list_remove (window_list, win_data);
 			destroy_window(win_data);
-#ifdef SAFEMODE
 			win_data = NULL;
-#endif
 			return NULL;
 		}
 		// if (-e option) and (win_data->execute_command_in_new_tab)...
@@ -164,16 +152,12 @@ GtkNotebook *new_window(int argc,
 			// g_debug ("Run the -e option on the new tab of current window!");
 			gint i, init_tab_number = win_data->init_tab_number;
 			struct Window *active_win_data = (struct Window *)g_object_get_data(G_OBJECT(last_active_window), "Win_Data");
-#ifdef SAFEMODE
 			// Treat it as win_data->execute_command_in_new_tab = FALSE
 			if (active_win_data!=NULL)
 			{
-#endif
 				struct Page *page_data = get_page_data_from_vte(active_win_data->current_vte, active_win_data, -1);
-#ifdef SAFEMODE
 				if (page_data!=NULL)
 				{
-#endif
 					active_win_data->command = win_data->command;
 					active_win_data->argv = win_data->argv;
 					active_win_data->argc = win_data->argc;
@@ -248,14 +232,10 @@ GtkNotebook *new_window(int argc,
 					// g_debug("new_window(2): Remove win_data(%p) from window_list!", win_data);
 					window_list = g_list_remove (window_list, win_data);
 					destroy_window(win_data);
-#ifdef SAFEMODE
 					win_data=NULL;
-#endif
 					return NULL;
-#ifdef SAFEMODE
 				}
 			}
-#endif
 		}
 		get_user_settings(win_data, encoding);
 	}
@@ -384,10 +364,8 @@ GtkNotebook *new_window(int argc,
 	{
 		// It is for the new window which dragged the vte tab to the root window
 		// for create_menu()
-#ifdef SAFEMODE
 		if ((win_data != NULL) && (win_data_orig != NULL))
 		{
-#endif
 			win_data->current_vte = win_data_orig->current_vte;
 #if defined(USE_GTK3_GEOMETRY_METHOD) || defined(UNIT_TEST)
 			win_data->hints_type = HINTS_SKIP_ONCE;
@@ -397,9 +375,7 @@ GtkNotebook *new_window(int argc,
 #  endif
 			resize_to_exist_widget(win_data);
 #endif
-#ifdef SAFEMODE
 		}
-#endif
 	}
 
 	// gtk_window_set_gravity(GTK_WINDOW(win_data->window), GDK_GRAVITY_NORTH);
@@ -473,19 +449,11 @@ gchar *get_init_dir(pid_t pid, gchar *pwd, gchar *home)
 	{
 		gchar *dir = get_tab_name_with_current_dir(pid);
 		// g_debug("get_init_dir: get_tab_name_with_current_dir(%d) = %s", pid, dir);
-#ifdef SAFEMODE
 		if (dir && (g_file_test(dir, G_FILE_TEST_EXISTS))) return dir;
-#else
-		if (g_file_test(dir, G_FILE_TEST_EXISTS)) return dir;
-#endif
 	}
 	if (home && (g_file_test(home, G_FILE_TEST_EXISTS))) return g_strdup(home);
 	gchar *dir = g_get_current_dir();
-#ifdef SAFEMODE
 	if (dir && (g_file_test(dir, G_FILE_TEST_EXISTS))) return dir;
-#else
-	if (g_file_test(dir, G_FILE_TEST_EXISTS)) return dir;
-#endif
 	return g_strdup("/");
 }
 
@@ -494,9 +462,7 @@ void set_window_icon(GtkWidget *window)
 #ifdef DETAIL
 	g_debug("! Launch set_window_icon() on window = %p", window);
 #endif
-#ifdef SAFEMODE
 	if (window==NULL) return;
-#endif
 	GdkPixbuf *icon = gdk_pixbuf_new_from_file(ICON_PATH, NULL);
 	if (icon)
 	{
@@ -510,9 +476,7 @@ gboolean window_quit(GtkWidget *window, GdkEvent *event, struct Window *win_data
 #ifdef DETAIL
 	g_debug("! Launch window_quit() with window = %p, win_data = %p", window, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((window==NULL) || (win_data==NULL)) return TRUE;
-#endif
 	menu_active_window = window;
 	if (win_data->confirm_to_kill_running_command)
 	{
@@ -545,14 +509,10 @@ GString *close_multi_tabs(struct Window *win_data, int window_no)
 #ifdef DETAIL
 	g_debug("! Launch close_multi_tabs() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
-#endif
 	gint i;
 	gint total_page = -1;
-#ifdef SAFEMODE
 	if (win_data->notebook)
-#endif
 		total_page = gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook));
 	struct Page *page_data = NULL;
 
@@ -562,15 +522,11 @@ GString *close_multi_tabs(struct Window *win_data, int window_no)
 	{
 		GString *child_process_list = g_string_new(NULL);
 		process_data = g_new0(struct Process_Data, PID_MAX_DEFAULT);
-#ifdef SAFEMODE
 		if (process_data==NULL) return child_process_list;
-#endif
 		for (i=0; i<total_page; i++)
 		{
 			page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 			if (page_data==NULL) continue;
-#endif
 			if (window_no)
 				child_process_list = get_child_process_list(win_data->window, window_no, i+1,
 									    child_process_list, page_data->pid,
@@ -587,11 +543,7 @@ GString *close_multi_tabs(struct Window *win_data, int window_no)
 			clean_process_data();
 			return child_process_list;
 		}
-#ifdef SAFEMODE
 		if (child_process_list && child_process_list->len)
-#else
-		if (child_process_list->len)
-#endif
 		{
 			if (! display_child_process_dialog (child_process_list, win_data,
 							    CONFIRM_TO_CLOSE_A_WINDOW_WITH_CHILD_PROCESS))
@@ -633,9 +585,7 @@ void clean_process_data()
 
 gboolean display_child_process_dialog (GString *child_process_list, struct Window *win_data, gsize style)
 {
-#ifdef SAFEMODE
 	if ((child_process_list==NULL) || (win_data==NULL)) return TRUE;
-#endif
 #ifdef DETAIL
 	g_debug("! Launch display_child_process_dialog() with child_process_list = %s, win_data = %p, style = %ld",
 		child_process_list->str, win_data, (long)style);
@@ -660,11 +610,9 @@ gboolean display_child_process_dialog (GString *child_process_list, struct Windo
 // cmd: the cmd of entry_tpgid
 GString *get_child_process_list(GtkWidget *window, gint window_no, gint page_no, GString *process_list, pid_t pid, struct Window *win_data, gboolean show_foreground)
 {
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
 	if (process_list==NULL) process_list = g_string_new(NULL);
 	if (process_list==NULL) return NULL;
-#endif
 #ifdef DETAIL
 	g_debug("! Launch get_child_process_list() with window = %p, page_no = %d, process_list = %s, "
 		"pid = %d, win_data = %p, show_foreground = %d",
@@ -689,11 +637,7 @@ GString *get_child_process_list(GtkWidget *window, gint window_no, gint page_no,
 		gchar **stats = NULL;
 		// struct Process_Data *entry_data = g_new0(struct Process_Data, 1);
 		struct Process_Data entry_data = {0};
-#ifdef SAFEMODE
 		if (entry_pid<PID_MAX_DEFAULT && process_data)
-#else
-		if (entry_pid<PID_MAX_DEFAULT)
-#endif
 		{
 			// Trying to check if we have done before
 			if (process_data[entry_pid].ppid==0)
@@ -727,11 +671,7 @@ GString *get_child_process_list(GtkWidget *window, gint window_no, gint page_no,
 				    (show_foreground && (pid == entry_pid) && (entry_pid == entry_tpgid) &&
 				     (! check_string_in_array(entry_data.cmd, win_data->running_process_whitelists))))
 				{
-#ifdef SAFEMODE
 					if (entry_pid<PID_MAX_DEFAULT && process_data)
-#else
-					if (entry_pid<PID_MAX_DEFAULT)
-#endif
 					{
 						process_data[entry_pid].window = window;
 						process_data[entry_pid].page_no = page_no;
@@ -774,9 +714,7 @@ FINISH:
 
 char **set_process_data (pid_t entry_pid, gint *ppid, StrAddr **cmd)
 {
-#ifdef SAFEMODE
 	if (ppid==NULL) return NULL;
-#endif
 #ifdef FULL
 	if (ppid)
 		g_debug("! Launch set_process_data() with entry_pid = %d, ppid = %d, cmd = %s", entry_pid, *ppid, *cmd);
@@ -801,9 +739,7 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 	g_debug("! Launch window_option() with win_data = %p, encoding = %s, argc = %d", win_data, encoding, argc);
 	print_array("! Launch window_option() with argv", argv);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (argv==NULL)) return FALSE;
-#endif
 	// g_debug("Get win_data = %d in window option!", win_data);
 	win_data->init_tab_number = 1;
 	win_data->profile = get_user_profile_path(win_data, argc, argv);
@@ -814,9 +750,7 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 	gint getting_tab_name_argc = -1;
 	for (i=0; i<argc; i++)
 	{
-#ifdef SAFEMODE
 		if (argv[i]==NULL) break;
-#endif
 
 		// g_debug("(%p): %2d (Total %d): %s", win_data, i, argc, argv[i]);
 		if ((!strcmp(argv[i], "-T")) || (!strcmp(argv[i], "--title")))
@@ -826,16 +760,12 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 			else
 			{
 				gchar *window_title = convert_str_to_utf8(argv[i], encoding);
-#ifdef SAFEMODE
 				if (window_title)
 				{
-#endif
 					win_data->custom_window_title_str = window_title;
 					update_window_title(win_data->window, win_data->custom_window_title_str,
 							    win_data->window_title_append_package_name);
-#ifdef SAFEMODE
 				}
-#endif
 				// g_debug("The title of LilyTerm is specified to %s",
 				//	win_data->custom_window_title_str);
 			}
@@ -847,9 +777,7 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 			else
 			{
 				window_role = convert_str_to_utf8(argv[i], encoding);
-#ifdef SAFEMODE
 				if ((window_role) && (win_data->window))
-#endif
 					gtk_window_set_role (GTK_WINDOW (win_data->window), window_role);
 
 				// g_debug("The role of LilyTerm is specified to %s", window_role);
@@ -926,11 +854,9 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 					}
 					// g_debug("arg_str = %s", arg_str->str);
 					gchar *old_temp_data = win_data->temp_data;
-#ifdef SAFEMODE
 					if (arg_str==NULL)
 						win_data->temp_data = convert_str_to_utf8(NULL, encoding);
 					else
-#endif
 						win_data->temp_data = convert_str_to_utf8(arg_str->str, encoding);
 
 					GtkWidget *menu_active_window_orig = menu_active_window;
@@ -1032,9 +958,7 @@ gboolean window_option(struct Window *win_data, gchar *encoding, int argc, char 
 		g_free(window_role);
 	else
 	{
-#ifdef SAFEMODE
 		if (win_data->window)
-#endif
 			gtk_window_set_role (GTK_WINDOW (win_data->window), PACKAGE);
 	}
 
@@ -1048,9 +972,7 @@ gboolean window_key_press(GtkWidget *window, GdkEventKey *event, struct Window *
 		g_debug("! Launch window_key_press() with key = %X (%s), state = %X, win_data = %p",
 			 event->keyval, gdk_keyval_name(event->keyval), event->state, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (event==NULL)) return FALSE;
-#endif
 	// g_debug ("Get win_data = %p in key_press", win_data);
 	// g_debug ("win_data->keep_vte_size = %X, event->state = %X", win_data->keep_vte_size, event->state);
 
@@ -1125,13 +1047,9 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 #ifdef DETAIL
 	g_debug("! Launch deal_key_press() with window = %p, type = %d, win_data = %p", window, type, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->current_vte==NULL)) return FALSE;
-#endif
 	gint total_page = -1;
-#ifdef SAFEMODE
 		if (win_data->notebook)
-#endif
 			total_page = gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook));
 	struct Page *page_data = get_page_data_from_vte(win_data->current_vte, win_data, -1);
 
@@ -1161,9 +1079,7 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 			//	    gchar *user_environ,
 			//	    gchar *VTE_CJK_WIDTH_STR,
 			//	    gboolean add_to_next)
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			add_page(win_data,
 				 page_data,
 				 NULL,
@@ -1208,9 +1124,7 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 			break;
 #endif
 		case KEY_PREV_TAB:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// switch to pre page
 			if (page_data->page_no)
 				gtk_notebook_prev_page(GTK_NOTEBOOK(win_data->notebook));
@@ -1218,9 +1132,7 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 				gtk_notebook_set_current_page(GTK_NOTEBOOK(win_data->notebook), total_page -1);
 			break;
 		case KEY_NEXT_TAB:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// switch to next page
 			if (page_data->page_no == (gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)) - 1))
 				gtk_notebook_set_current_page(GTK_NOTEBOOK(win_data->notebook), 0);
@@ -1236,17 +1148,13 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(win_data->notebook), total_page-1);
 			break;
 		case KEY_MOVE_TAB_FORWARD:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// move current page forward
 			gtk_notebook_reorder_child(GTK_NOTEBOOK(win_data->notebook), page_data->hbox,
 						   page_data->page_no -1);
 			break;
 		case KEY_MOVE_TAB_BACKWARD:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// move current page backward
 			if (page_data->page_no == (gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook))-1))
 				gtk_notebook_reorder_child(GTK_NOTEBOOK(win_data->notebook), page_data->hbox, 0);
@@ -1255,16 +1163,12 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 							   page_data->hbox, page_data->page_no+1);
 			break;
 		case KEY_MOVE_TAB_FIRST:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// move current page to first
 			gtk_notebook_reorder_child(GTK_NOTEBOOK(win_data->notebook), page_data->hbox, 0);
 			break;
 		case KEY_MOVE_TAB_LAST:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			// move current page to last
 			gtk_notebook_reorder_child(GTK_NOTEBOOK(win_data->notebook), page_data->hbox, -1);
 			break;
@@ -1403,15 +1307,11 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 #ifdef ENABLE_MOUSE_SCROLL
 #  ifndef SCROLL_LINE
 		case KEY_SCROLL_UP:
-#    ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#    endif
 			gtk_test_widget_click(page_data->vte, 4, 0);
 			break;
 		case KEY_SCROLL_DOWN:
-#    ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#    endif
 			gtk_test_widget_click(page_data->vte, 5, 0);
 			break;
 #  else
@@ -1421,9 +1321,7 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 		case KEY_SCROLL_UP_1_LINE:
 		case KEY_SCROLL_DOWN_1_LINE:
 		{
-#  ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#  endif
 			gdouble value = gtk_adjustment_get_value(page_data->adjustment);
 			switch (type)
 			{
@@ -1465,9 +1363,7 @@ gboolean deal_key_press(GtkWidget *window, Key_Bindings type, struct Window *win
 			break;
 #ifdef FATAL
 		case KEY_DUMP_DATA:
-#ifdef SAFEMODE
 			if (page_data==NULL) return FALSE;
-#endif
 			dump_data(win_data, page_data);
 			break;
 		default:
@@ -1503,9 +1399,7 @@ gboolean window_key_release(GtkWidget *window, GdkEventKey *event, struct Window
 		g_debug("! Launch window_key_release() with key = %X (%s), state = %X, win_data = %p",
 			 event->keyval, gdk_keyval_name(event->keyval), event->state, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (event==NULL)) return FALSE;
-#endif
 	if ((win_data->disable_url_when_ctrl_pressed == FALSE) || (win_data->enable_key_binding == FALSE) || (win_data->keep_vte_size)) return FALSE;
 
 	// g_debug ("Get win_data = %p in key_press", win_data);
@@ -1540,9 +1434,7 @@ gboolean window_get_focus(GtkWidget *window, GdkEventFocus *event, struct Window
 #ifdef DETAIL
 	g_debug("! Launch window_get_focus() with window =%p, win_data = %p", window, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	// g_debug("Window get focus!");
 
 	// update current_vte when window_get_focus!
@@ -1573,9 +1465,7 @@ gboolean window_lost_focus(GtkWidget *window, GdkEventFocus *event, struct Windo
 #ifdef DETAIL
 	g_debug("! Launch window_lost_focus() with window =%p, win_data = %p", window, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	// g_debug("Window lost focus!, win_data->current_vte = %p", win_data->current_vte);
 
 	if (win_data->current_vte == NULL) return FALSE;
@@ -1584,10 +1474,8 @@ gboolean window_lost_focus(GtkWidget *window, GdkEventFocus *event, struct Windo
 	    (vte_terminal_get_window_title(VTE_TERMINAL(win_data->current_vte))!=NULL))
 	{
 		struct Page *page_data = get_page_data_from_vte(win_data->current_vte, win_data, -1);
-#ifdef SAFEMODE
 		if (page_data)
 		{
-#endif
 			if (win_data->page_shows_current_cmdline)
 				win_data->window_title_tpgid = page_data->displayed_tpgid;
 
@@ -1596,9 +1484,7 @@ gboolean window_lost_focus(GtkWidget *window, GdkEventFocus *event, struct Windo
 				g_free(page_data->window_title_pwd);
 				page_data->window_title_pwd = get_tab_name_with_current_dir(page_data->current_tpgid);
 			}
-#ifdef SAFEMODE
 		}
-#endif
 	}
 	win_data->lost_focus = TRUE;
 
@@ -1620,9 +1506,7 @@ void window_style_set(GtkWidget *window, GtkStyle *previous_style, struct Window
 #ifdef DETAIL
 	g_debug("! Launch window_style_set() with window =%p, win_data = %p", window, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// win_data->keep_vte_size |= 8;
 	// g_debug("window_resizable in window_style_set! keep_vte_size = %d", keep_vte_size);
 	// window_resizable(window, win_data->current_vte, 2, 1);
@@ -1677,9 +1561,7 @@ void dim_window(struct Window *win_data, gint dim_window)
 #ifdef DETAIL
 	g_debug("! Launch dim_window() with win_data = %p, dim_window = %d", win_data, dim_window);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 
 	// win_data->dim_window <- record if "[ ] Dim the window when inactive" is clicked.
 
@@ -1750,9 +1632,7 @@ void destroy_window(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch destroy_window() with win_data = %p!", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	clear_window(win_data);
 
 #ifdef ENABLE_BEEP_SINGAL
@@ -1770,9 +1650,7 @@ void clear_win_data(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch clear_win_data() win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	int i;
 
 	g_free(win_data->environment);
@@ -1878,14 +1756,10 @@ void notebook_page_added(GtkNotebook *notebook, GtkWidget *child, guint page_num
 	g_debug("! Launch notebook_page_added() with notebook = %p, page_num = %d, and win_data = %p",
 		notebook, page_num, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// g_debug("notebook_page_added !");
 	struct Page *page_data = get_page_data_from_nth_page(win_data, page_num);
-#ifdef SAFEMODE
 	if (page_data==NULL) return;
-#endif
 	// g_debug("Get page_data = %p", page_data);
 
 	// FIXME: Calling remove_notebook_page() here
@@ -1908,9 +1782,7 @@ void notebook_page_added(GtkNotebook *notebook, GtkWidget *child, guint page_num
 	{
 		struct Window *win_data_orig = (struct Window *)g_object_get_data(G_OBJECT(page_data->window),
 										  "Win_Data");
-#ifdef SAFEMODE
 		if (win_data_orig==NULL) return;
-#endif
 
 		// g_debug("Set page_data->window = win_data->window in notebook_page_added()");
 		page_data->window = win_data->window;
@@ -1990,9 +1862,7 @@ void show_close_button_on_tab(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch show_close_button_on_tab() with win_data = %p, page_data = %p!",  win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->label_button==NULL)) return;
-#endif
 	if ((win_data->show_close_button_on_tab && (page_data->vte == win_data->current_vte)) ||
 	    win_data->show_close_button_on_all_tabs)
 		gtk_widget_show(page_data->label_button);
@@ -2008,9 +1878,7 @@ void set_fill_tabs_bar(GtkNotebook *notebook, gboolean fill_tabs_bar, struct Pag
 	g_debug("! Launch set_fill_tabs_bar() with notebook = %p, fill_tabs_bar = %d, page_data = %p",
 		notebook, fill_tabs_bar, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((notebook==NULL) || (page_data==NULL) || (page_data->hbox==NULL)) return;
-#endif
 #ifdef USE_OLD_GTK_LABEL_PACKING
 	gtk_notebook_set_tab_label_packing(GTK_NOTEBOOK(notebook), page_data->hbox,
 					   fill_tabs_bar, fill_tabs_bar, GTK_PACK_START);
@@ -2032,9 +1900,7 @@ void reorder_page_after_added_removed_page(struct Window *win_data, guint page_n
 	g_debug("! Launch reorder_page_after_added_removed_page() with win_data = %p, page_num = %d",
 		win_data, page_num);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->notebook==NULL)) return;
-#endif
 	// g_debug("Reordering the page and update page name!");
 	win_data->adding_page = TRUE;
 	reorder_page_number(GTK_NOTEBOOK(win_data->notebook), NULL, 0, win_data->window);
@@ -2045,9 +1911,7 @@ void reorder_page_after_added_removed_page(struct Window *win_data, guint page_n
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(win_data->notebook), page_num);
 	// g_debug("Set focus to win_data->current_vte %p!", win_data->current_vte);
 	struct Page *page_data = get_page_data_from_nth_page(win_data, page_num);
-#ifdef SAFEMODE
 	if (page_data==NULL) return;
-#endif
 	// gtk_window_set_focus(GTK_WINDOW(win_data->window), win_data->current_vte);
 	// g_debug("Set focus to %p", page_data->vte);
 	gtk_window_set_focus(GTK_WINDOW(win_data->window), page_data->vte);
@@ -2058,9 +1922,7 @@ void remove_notebook_page(GtkNotebook *notebook, GtkWidget *child, guint page_nu
 #ifdef DETAIL
 	g_debug("! Launch remove_notebook_page() with notebook = %p, and win_data = %p, page_num = %d", notebook, win_data, page_num);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// g_debug("remove_notebook_page !");
 	gint total_page;
 	if (notebook)
@@ -2073,9 +1935,7 @@ void remove_notebook_page(GtkNotebook *notebook, GtkWidget *child, guint page_nu
 	{
 		// g_debug("Update the hint data!");
 		struct Page *page_data = get_page_data_from_vte(win_data->current_vte, win_data, page_num);
-#ifdef SAFEMODE
 		if (page_data==NULL) return;
-#endif
 		// g_debug("win_data->current_vte = %p, page_data = %p", win_data->current_vte, page_data);
 		// g_debug("remove_notebook_page(): launch update_window_hint()!");
 #  ifdef GEOMETRY
@@ -2150,13 +2010,9 @@ GtkNotebook *create_window (GtkNotebook *notebook, GtkWidget *page, gint x, gint
 		g_debug("! Launch create_window() with notebook = %p, win_data = %p",
 			notebook, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->current_vte==NULL)) return NULL;
-#endif
 	struct Page *page_data = get_page_data_from_vte(win_data->current_vte, win_data, -1);
-#ifdef SAFEMODE
 	if (page_data==NULL) return NULL;
-#endif
 	// we set the encoding=NULL here,
 	// because new_window() with page_data != NULL will not call add_page()
 	//GtkNotebook *new_window(int argc,
@@ -2212,21 +2068,15 @@ void resize_to_exist_widget(struct Window *win_data)
 #  ifdef DETAIL
 	g_debug("! Launch resize_to_exist_widget() with win_data = %p", win_data);
 #  endif
-#  ifdef SAFEMODE
 	if (win_data==NULL) return;
-#  endif
 	GtkWidget *widget = win_data->notebook;
 	gboolean show_tabs_bar = get_hide_or_show_tabs_bar(win_data, win_data->show_tabs_bar);
 	if (show_tabs_bar == FALSE)
 	{
 		// find the current vte size
-#  ifdef SAFEMODE
 		if (win_data->current_vte==NULL) return;
-#  endif
 		struct Page *page_data = get_page_data_from_vte(win_data->current_vte, win_data, -1);
-#  ifdef SAFEMODE
 		if (page_data) return;
-#  endif
 			widget = page_data->hbox;
 	}
 
@@ -2247,9 +2097,7 @@ void save_vte_geometry(struct Window *win_data)
 #  ifdef DETAIL
 	g_debug("! Launch save_vte_geometry() with win_data = %p", win_data);
 #  endif
-#  ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->notebook==NULL)) return;
-#  endif
 
 	if (win_data->hints_type==HINTS_NONE)
 	{
@@ -2292,9 +2140,7 @@ gboolean show_or_hide_tabs_bar_and_scroll_bar(struct Window *win_data)
 #  ifdef DETAIL
 	g_debug("! Launch show_or_hide_tabs_bar_and_scroll_bar() with  win_data = %p", win_data);
 #  endif
-#  ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#  endif
 	// g_debug("show_or_hide_tabs_bar_and_scroll_bar(): win_data->window_status = %d", win_data->window_status);
 	hide_and_show_tabs_bar(win_data, win_data->show_tabs_bar);
 	fullscreen_show_hide_scroll_bar(win_data);
@@ -2371,17 +2217,13 @@ gboolean idle_hide_and_show_tabs_bar(struct Window *win_data)
 #ifdef FATAL
 void dump_data (struct Window *win_data, struct Page *page_data)
 {
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL)) return;
-#endif
 	gint i, j;
 
 // ---- win_data ---- //
 
 	g_debug("- win_data->environment = %s", win_data->environment);
-#ifdef SAFEMODE
 	if (win_data->warned_locale_list)
-#endif
 		g_debug("- win_data->warned_locale_list->str = %s", win_data->warned_locale_list->str);
 	g_debug("- win_data->runtime_encoding = %s", win_data->runtime_encoding);
 	g_debug("- win_data->default_encoding = %s", win_data->default_encoding);
@@ -2652,9 +2494,7 @@ void dump_data (struct Window *win_data, struct Page *page_data)
 	gchar *cmdline = get_cmdline(page_data->pid);
 	g_debug("- page_data->pid = %d, cmdline = %s", page_data->pid, cmdline);
 	g_free(cmdline);
-#ifdef SAFEMODE
 	if (page_data->vte)
-#endif
 		g_debug("- page_data row x col = (%ld x %ld)", vte_terminal_get_row_count(VTE_TERMINAL(page_data->vte)),
 							       vte_terminal_get_column_count(VTE_TERMINAL(page_data->vte)));
 	cmdline = get_cmdline(page_data->current_tpgid);
@@ -2684,21 +2524,15 @@ void dump_data (struct Window *win_data, struct Page *page_data)
 	g_debug("- page_data->page_shows_current_cmdline = %d", page_data->page_shows_current_cmdline);
 	g_debug("- page_data->bold_action_page_name = %d", page_data->bold_action_page_name);
 //	g_debug("- page_data->use_scrollback_lines = %d", page_data->use_scrollback_lines);
-#ifdef SAFEMODE
 	if ((page_data) && (page_data->window_title_tpgid))
 	{
-#endif
 		cmdline = get_cmdline(*(page_data->window_title_tpgid));
 		g_debug("- page_data->*window_title_tpgid = %d (%s)", *(page_data->window_title_tpgid), cmdline);
 		g_free(cmdline);
-#ifdef SAFEMODE
 	}
 	if (page_data->lost_focus)
-#endif
 		g_debug("- page_data->*lost_focus = %d", *(page_data->lost_focus));
-#ifdef SAFEMODE
 	if (page_data->current_vte)
-#endif
 		g_debug("- page_data->*current_vte = %p", *(page_data->current_vte));
 	g_debug("- page_data->window_title_pwd = %s", page_data->window_title_pwd);
 	g_debug("- page_data->custom_window_title = %d", page_data->custom_window_title);
@@ -2767,9 +2601,7 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch win_data_dup() with win_data_orig = %p, win_data = %p", win_data_orig, win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data_orig==NULL) || (win_data==NULL)) return;
-#endif
 	gint i;
 
 	// The win_data->window is created already before win_data_dup() is launched.
@@ -2840,9 +2672,7 @@ void win_data_dup(struct Window *win_data_orig, struct Window *win_data)
 		win_data->environment = g_strdup(win_data_orig->environment);
 
 	win_data->geometry = g_strdup(win_data_orig->geometry);
-#ifdef SAFEMODE
 	if (win_data_orig->warned_locale_list)
-#endif
 		win_data->warned_locale_list = g_string_new(win_data_orig->warned_locale_list->str);
 	win_data->default_encoding = g_strdup(win_data_orig->default_encoding);
 	win_data->encoding_sub_menu = NULL;
@@ -3116,9 +2946,7 @@ void update_window_hint(struct Window *win_data,
 	g_debug("! Launch update_window_hint() with win_data = %p, page_data = %p",
 		win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL) || (page_data->notebook==NULL)) return;
-#endif
 	if (gtk_notebook_get_n_pages(GTK_NOTEBOOK(page_data->notebook)) == 1 &&
 	    page_data->font_size == 0)
 		win_data->hints_type = HINTS_FONT_BASE;
@@ -3148,9 +2976,7 @@ gboolean hide_and_show_tabs_bar(struct Window *win_data , Switch_Type show_tabs_
 	g_debug("! Launch hide_and_show_tabs_bar() with win_data = %p, show_tabs_bar = %d",
 		win_data, show_tabs_bar);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->notebook==NULL)) return FALSE;
-#endif
 	gboolean show = get_hide_or_show_tabs_bar(win_data, show_tabs_bar);
 	// g_debug("hide_and_show_tabs_bar: show = %d", show);
 	if (show == gtk_notebook_get_show_tabs(GTK_NOTEBOOK(win_data->notebook))) return FALSE;
@@ -3205,9 +3031,7 @@ gboolean get_hide_or_show_tabs_bar(struct Window *win_data, Switch_Type show_tab
 	g_debug("! Launch get_hide_or_show_tabs_bar() with win_data = %p, show_tabs_bar = %d",
 		win_data, show_tabs_bar);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->notebook==NULL)) return FALSE;
-#endif
 
 	gboolean show = gtk_notebook_get_show_tabs(GTK_NOTEBOOK(win_data->notebook));
 	// g_debug("get_hide_or_show_tabs_bar: show = %d, win_data->window_status = %d", show, win_data->window_status);
@@ -3252,9 +3076,7 @@ void set_widget_can_not_get_focus(GtkWidget *widget)
 #ifdef DETAIL
 	g_debug("! Launch set_widget_can_not_get_focus() with widget = %p", widget);
 #endif
-#ifdef SAFEMODE
 	if (widget==NULL) return;
-#endif
 	gtk_widget_set_can_focus(GTK_WIDGET (widget), FALSE);
 }
 
@@ -3263,13 +3085,9 @@ gboolean hide_scrollback_lines(GtkWidget *menu_item, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch hide_scrollback_lines()");
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	gboolean show = TRUE;
-#ifdef SAFEMODE
 	if (win_data->menuitem_hide_scroll_bar)
-#endif
 		show = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM(win_data->menuitem_hide_scroll_bar));
 
 	win_data->show_scroll_bar = AUTOMATIC;
@@ -3301,17 +3119,13 @@ gboolean hide_scrollback_lines(GtkWidget *menu_item, struct Window *win_data)
 	struct Page *page_data = NULL;
 
 	gint total_page = -1;
-#ifdef SAFEMODE
 	if (win_data->notebook)
-#endif
 		total_page = gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook));
 
 	for (i=0; i<total_page; i++)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data==NULL) continue;
-#endif
 		show_and_hide_scroll_bar(page_data, show);
 	}
 
@@ -3348,9 +3162,7 @@ gboolean fullscreen_show_hide_scroll_bar(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch fullscreen_show_hide_scroll_bar() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->menuitem_hide_scroll_bar==NULL)) return FALSE;
-#endif
 	gboolean show = check_show_or_hide_scroll_bar(win_data);
 	gboolean current_show = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM(win_data->menuitem_hide_scroll_bar));
 	// g_debug("fullscreen_show_hide_scroll_bar(): show = %d, current_show = %d", show, current_show);
@@ -3369,9 +3181,7 @@ gboolean confirm_to_paste_form_clipboard(Clipboard_Type type, struct Window *win
 	g_debug("! Launch confirm_to_paste_form_clipboard() with type = %d, win_data = %p, page_data = %p",
 		type, win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if (page_data==NULL) return FALSE;
-#endif
 	gchar **stats = get_pid_stat(get_tpgid(page_data->pid), 4);
 	gboolean pasted = FALSE;
 	if ((stats) &&
@@ -3389,9 +3199,7 @@ gboolean show_clipboard_dialog(Clipboard_Type type, struct Window *win_data,
 	g_debug("! Launch show_clipboard_dialog() with type = %d, win_data = %p, page_data = %p, dialog_type = %d",
 		type, win_data, page_data, dialog_type);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return FALSE;
-#endif
 	gboolean pasted = FALSE;
 	GtkClipboard *clipboard = NULL;
 	switch (type)
@@ -3414,9 +3222,7 @@ gboolean show_clipboard_dialog(Clipboard_Type type, struct Window *win_data,
 #endif
 			break;
 	}
-#ifdef SAFEMODE
 	if (clipboard==NULL) return FALSE;
-#endif
 	gchar *clipboard_str = g_strdup(gtk_clipboard_wait_for_text(clipboard));
 	gchar *old_temp_data = win_data->temp_data;
 	switch (dialog_type)
@@ -3451,10 +3257,8 @@ gboolean show_clipboard_dialog(Clipboard_Type type, struct Window *win_data,
 		{
 			if (dialog_type == CONFIRM_TO_PASTE_TEXTS_TO_VTE_TERMINAL)
 			{
-#ifdef SAFEMODE
 				if (page_data!=NULL)
 				{
-#endif
 					if (response==GTK_RESPONSE_ACCEPT)
 					{
 						gchar **old_clipboard_strs = split_string(clipboard_str, "\n\r", -1);
@@ -3568,9 +3372,7 @@ gboolean show_clipboard_dialog(Clipboard_Type type, struct Window *win_data,
 						// g_debug("Set clipboard to %s", clipboard_str);
 						if (clipboard_str) gtk_clipboard_set_text(clipboard, clipboard_str, -1);
 					}
-#ifdef SAFEMODE
 				}
-#endif
 			}
 		}
 		pasted = TRUE;

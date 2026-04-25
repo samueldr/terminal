@@ -231,9 +231,7 @@ gboolean set_fd_non_block(gint *fd)
 	else
 		g_debug("! Launch set_fd_non_block() with fd = (%p)!", fd);
 #endif
-#ifdef SAFEMODE
 	if (fd==NULL) return FALSE;
-#endif
 	GError *error = NULL;
 	gint flags = fcntl(*fd, F_GETFL, 0);
 	if (fcntl(*fd, F_SETFL, O_NONBLOCK|flags) < 0)
@@ -265,9 +263,7 @@ gboolean send_socket(gchar *socket_str)
 	g_debug("! Launch send_socket() to send data to the exiting %s with socket_str = \"%s\"!", PACKAGE, socket_str);
 #endif
 	// write data!
-#ifdef SAFEMODE
 	if (fcntl(socket_fd, F_GETFL) < 0) return FALSE;
-#endif
 	GError *error = NULL;
 	GIOChannel *channel = g_io_channel_unix_new(socket_fd);
 	gsize len;
@@ -377,9 +373,7 @@ gboolean accept_socket(GIOChannel *source, GIOCondition condition, GSourceFunc r
 #ifdef DETAIL
 	g_debug("! Launch accept_socket() to accept the request from client !");
 #endif
-#ifdef SAFEMODE
 	if (source==NULL) return FALSE;
-#endif
 	GError *error = NULL;
 
 	if (condition & G_IO_HUP)
@@ -412,9 +406,7 @@ gboolean read_socket(GIOChannel *channel, GIOCondition condition, GSourceFunc re
 #ifdef DETAIL
 	g_debug("! Launch read_socket() to read data !");
 #endif
-#ifdef SAFEMODE
 	if (channel==NULL) return FALSE;
-#endif
 	GError *error = NULL;
 	gchar *str = NULL;
 	gsize len = 0;

@@ -281,7 +281,6 @@ gchar *convert_socket_data_to_string(char *argv[])
 	// print_array("! send_socket() environ", environ);
 	// g_debug("environ_str = %s", environ_str);
 	gchar *argv_str = convert_array_to_string(argv, SEPARATE_CHAR);
-#ifdef SAFEMODE
 	gboolean need_free_argv_str = TRUE;
 	if (argv_str==NULL) argv_str=g_strdup("");
 	if (argv_str==NULL)
@@ -289,18 +288,7 @@ gchar *convert_socket_data_to_string(char *argv[])
 		need_free_argv_str = FALSE;
 		argv_str = "";
 	}
-#endif
-	// g_debug("argv_str = %s", argv_str);
 
-	// g_debug("SEND DATA: SOCKET_DATA_VERSION = %s", SOCKET_DATA_VERSION);
-	// g_debug("SEND DATA: locale_list = %s", locale_list);
-	// g_debug("SEND DATA: encoding = %s", encoding);
-	// g_debug("SEND DATA: PWD = %s", PWD);
-	// g_debug("SEND DATA: VTE_CJK_WIDTH_STR = %s", VTE_CJK_WIDTH_STR);
-	// g_debug("SEND DATA: wmclass_name = %s", wmclass_name);
-	// g_debug("SEND DATA: wmclass_class = %s", wmclass_class);
-	// g_debug("SEND DATA: environ_str = %s", environ_str);
-	// g_debug("SEND DATA: argv_str = %s", argv_str);
 	//	      0			  1	2	    3	     4		 5   6	  7		    8		 9	       10      11
 	// send data: SOCKET_DATA_VERSION SHELL LOCALE_LIST ENCODING LC_MESSAGES PWD HOME VTE_CJK_WIDTH_STR wmclass_name wmclass_class ENVIRON ARGV
 	//				  0	1     2	    3	  4	5     6	    7	  8	9     10    11
@@ -333,9 +321,7 @@ gchar *convert_socket_data_to_string(char *argv[])
 	g_free(encoding);
 	g_free(lc_messages);
 	g_free(environ_str);
-#ifdef SAFEMODE
 	if (need_free_argv_str)
-#endif
 		g_free(argv_str);
 
 	return arg_str;
@@ -474,10 +460,8 @@ void main_quit(GtkWidget *widget, struct Window *win_data)
 	// g_debug("Total window = %d", g_list_length(window_list));
 	if (g_list_length(window_list)==1)
 	{
-#ifdef SAFEMODE
 		// g_debug ("main_quit(): win_data==NULL, call gtk_main_quit()");
 		if (win_data==NULL) return quit_gtk();
-#endif
 		window_quit(win_data->window, NULL, win_data);
 	}
 	else
@@ -491,9 +475,7 @@ void main_quit(GtkWidget *widget, struct Window *win_data)
 		{
 			temp_win_data = win_list->data;
 			child_process_list = close_multi_tabs(temp_win_data, i);
-#ifdef SAFEMODE
 			if (child_process_list)
-#endif
 				g_string_append (all_process_list, child_process_list->str);
 			g_string_free(child_process_list, TRUE);
 			win_list = win_list->next;
@@ -501,15 +483,9 @@ void main_quit(GtkWidget *widget, struct Window *win_data)
 		}
 
 		// g_debug("Got all_process_list =%s", all_process_list->str);
-#ifdef SAFEMODE
 		if ((all_process_list==NULL) || (all_process_list->len==0) ||
 		    (display_child_process_dialog (all_process_list, win_data,
 						   CONFIRM_TO_EXIT_WITH_CHILD_PROCESS)))
-#else
-		if ((all_process_list->len==0) ||
-		    (display_child_process_dialog (all_process_list, win_data,
-						   CONFIRM_TO_EXIT_WITH_CHILD_PROCESS)))
-#endif
 		{
 			force_to_quit = TRUE;
 			// g_debug ("main_quit(): call gtk_main_quit()");

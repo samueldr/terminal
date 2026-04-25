@@ -14,7 +14,6 @@ GTK=gtk+-3.0
 
 VERBOSITY=N
 NLS=Y
-SAFEMODE=Y
 STRIP=N
 
 GTK_SPC=1
@@ -159,9 +158,6 @@ for opt do
       ;;
     --disable-nls)
       NLS=N
-      ;;
-    --disable-safe-mode)
-      SAFEMODE=N
       ;;
     --enable-strip)
       STRIP=Y
@@ -310,11 +306,6 @@ if [ "$NLS" = 'N' ]; then
 else
   $ECHO "  NLS        = $NLS"
 fi
-if [ "$SAFEMODE" = 'N' ]; then
-  IMPORTANT "  SAFEMODE   = $SAFEMODE\n"
-else
-  $ECHO "  SAFEMODE   = $SAFEMODE"
-fi
 if [ "$STRIP" = 'Y' ]; then
   IMPORTANT "  STRIP      = $STRIP\n"
 fi
@@ -362,7 +353,6 @@ $ECHO "ETCDIR = $ETCDIR" >> .config
 $ECHO "NLS = $NLS" >> .config
 $ECHO "VERBOSITY = $VERBOSITY" >> .config
 $ECHO "NLS = $NLS" >> .config
-$ECHO "SAFEMODE = $SAFEMODE" >> .config
 $ECHO "STRIP = $STRIP" >> .config
 $ECHO "CC = $CC" >> .config
 $ECHO "CPPFLAGS = $CPPFLAGS" >> .config

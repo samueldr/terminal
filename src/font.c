@@ -27,15 +27,11 @@ void set_vte_font(GtkWidget *widget, Font_Set_Type type)
 #ifdef DETAIL
 	g_debug("! Launch set_vte_font() with type = %d", type);
 #endif
-#ifdef SAFEMODE
 	if (menu_active_window==NULL) return;
-#endif
 
 	// GtkWidget *vte = current_vte;
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(menu_active_window), "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	GtkWidget *vte = win_data->current_vte;
 	gchar *new_font_name = NULL;
 
@@ -105,18 +101,12 @@ gchar *get_resize_font(GtkWidget *vte, Font_Name_Type type)
 #ifdef DETAIL
 	g_debug("! Launch get_resize_font() for vte %p with type %d", vte, type);
 #endif
-#ifdef SAFEMODE
 	if (vte==NULL) return NULL;
-#endif
 	// we must insure that vte!=NULL
 	struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 	if (page_data==NULL) return NULL;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return NULL;
-#endif
 	// g_debug("Get win_data = %d when get resize font!", win_data);
 	// type 0, FONT_NAME_DEFAULT: restore font to default_font_name
 	// type 1, FONT_NAME_SYSTEM: restore font to system_font_name
@@ -175,9 +165,7 @@ gchar *get_resize_font(GtkWidget *vte, Font_Name_Type type)
 		case FONT_NAME_INCREASE:
 		case FONT_NAME_DECREASE:
 		{
-#ifdef SAFEMODE
 			if (page_data->font_name==NULL) break;
-#endif
 			gint oldfontsize=0, fontsize=0;
 
 			// g_debug("old font name: %s", page_data->font_name);
@@ -296,9 +284,7 @@ void reset_vte_size(GtkWidget *vte, gchar *new_font_name, Font_Reset_Type type)
 	g_debug("! Launch reset_vte_size() with vte = %p, new_font_name = %s, type = %d",
 		vte, new_font_name, type);
 #endif
-#ifdef SAFEMODE
 	if ((vte==NULL) || (new_font_name==NULL)) return;
-#endif
 
 	// type 0, RESET_CURRENT_TAB_FONT: change current page's font
 	// type 1, RESET_ALL_TO_CURRENT_TAB: apply current column & row to every vte
@@ -306,13 +292,9 @@ void reset_vte_size(GtkWidget *vte, gchar *new_font_name, Font_Reset_Type type)
 	// type 3, RESET_ALL_TO_SYSTEM: apply system column & row to every vte
 
 	struct Page *page_data = (struct Page *)g_object_get_data(G_OBJECT(vte), "Page_Data");
-#ifdef SAFEMODE
 	if (page_data==NULL) return;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(page_data->window), "Win_Data");
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// g_debug("Get win_data = %d when reset vte size!", win_data);
 
 	switch (type)
@@ -365,14 +347,10 @@ void apply_font_to_every_vte(GtkWidget *window, gchar *new_font_name, glong colu
 	g_debug("! Launch apply_font_to_every_vte() with window = %p, new_font_name = %s,"
 		" column = %ld, row = %ld", window, new_font_name, column, row);
 #endif
-#ifdef SAFEMODE
 	if ((window==NULL) || (new_font_name==NULL) || (column<1) || (row<1)) return;
-#endif
 	struct Window *win_data = (struct Window *)g_object_get_data(G_OBJECT(window), "Win_Data");
 	// g_debug("Get win_data = %d when apply font to every vte!", win_data);
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 
 	struct Page *page_data = NULL;
 	gint i;
@@ -383,9 +361,7 @@ void apply_font_to_every_vte(GtkWidget *window, gchar *new_font_name, glong colu
 	for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data==NULL) continue;
-#endif
 		// g_debug("The default font for %d page is: %s (%s)", i, page_data->font_name, new_font_name);
 		fake_vte_terminal_set_font_from_string( page_data->vte,
 							new_font_name,
@@ -433,9 +409,7 @@ gboolean check_if_every_vte_is_using_restore_font_name(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch check_if_every_vte_is_using_restore_font_name() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->notebook==NULL)) return FALSE;
-#endif
 	if (win_data->restore_font_name == NULL)
 	//	win_data->restore_font_name = g_strdup(page_data->font_name);
 		win_data->restore_font_name = g_strdup(win_data->default_font_name);
@@ -446,9 +420,7 @@ gboolean check_if_every_vte_is_using_restore_font_name(struct Window *win_data)
 	for (i=0; i<gtk_notebook_get_n_pages(GTK_NOTEBOOK(win_data->notebook)); i++)
 	{
 		page_data = get_page_data_from_nth_page(win_data, i);
-#ifdef SAFEMODE
 		if (page_data==NULL) continue;
-#endif
 		if (compare_strings(page_data->font_name, win_data->restore_font_name, TRUE))
 		{
 			return_value = FALSE;
@@ -463,9 +435,7 @@ void fake_vte_terminal_set_font_from_string(GtkWidget *vte, const char *font_nam
 #ifdef DETAIL
 	g_debug("! Launch fake_vte_terminal_set_font_from_string() with vte = %p, font_name = %s, anti_alias = %d", vte, font_name, anti_alias);
 #endif
-#ifdef SAFEMODE
 	if ((vte==NULL) || (font_name==NULL)) return;
-#endif
 
 #ifdef USE_VTE_TERMINAL_SET_FONT
 	PangoFontDescription *font_desc = pango_font_description_from_string(font_name);

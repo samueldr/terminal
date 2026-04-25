@@ -338,9 +338,7 @@ void init_user_command(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch init_user_command() for win_data %p", win_data);
 #endif
-#ifdef SAFEMODE
 		if (win_data==NULL) return;
-#endif
 
 	win_data->user_command[TAG_WWW].command = g_strdup("xdg-open");
 	win_data->user_command[TAG_FTP].command = g_strdup("xdg-open");
@@ -369,9 +367,7 @@ void init_window_parameters(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch init_window_parameters() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 		if (win_data==NULL) return;
-#endif
 	// win_data->environment;
 	// win_data->warned_locale_list = g_string_new(" ");		// inited in init_prime_user_datas()
 	// win_data->runtime_encoding;
@@ -613,9 +609,7 @@ void init_page_parameters(struct Window *win_data, struct Page *page_data)
 #ifdef DETAIL
 	g_debug("! Launch init_page_parameters() with win_data = %p, page_data = %p", win_data, page_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (page_data==NULL)) return;
-#endif
 	// g_debug("Set page_data->window = win_data->window in init_page_parameters()");
 	page_data->window = win_data->window;
 	page_data->notebook = win_data->notebook;
@@ -671,9 +665,7 @@ void init_user_keys(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch init_user_keys() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// for disable/enable the function keys
 	win_data->user_keys[KEY_DISABLE_FUNCTION].value = g_strdup("Ctrl grave");
 	// New Page
@@ -1146,9 +1138,7 @@ void init_user_color(struct Window *win_data, gchar *theme_name)
 #ifdef DETAIL
 	g_debug("! Launch init_user_color() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	gint i, j;
 
 	// copy colors from system_color_theme to custom_color_theme
@@ -1182,15 +1172,11 @@ gchar *get_user_profile_path(struct Window *win_data, int argc, char *argv[])
 	gint i;
 	gchar *profile=NULL;
 
-#ifdef SAFEMODE
 	if (argv)
 	{
-#endif
 		for (i=0; i<argc; i++)
 		{
-#ifdef SAFEMODE
 			if (argv[i] == NULL) continue;
-#endif
 			if ((!strcmp(argv[i], "-u")) || (!strcmp(argv[i], "--user_profile")))
 			{
 				if (++i==argc)
@@ -1221,9 +1207,7 @@ gchar *get_user_profile_path(struct Window *win_data, int argc, char *argv[])
 				 (!strcmp(argv[i], "--execute")))
 				break;
 		}
-#ifdef SAFEMODE
 	}
-#endif
 	// trying to got witch profile to use
 	if (profile==NULL)
 	{
@@ -1240,15 +1224,9 @@ gchar *load_profile_from_dir(const gchar *dir, const gchar* profile)
 #ifdef DETAIL
 	g_debug("! Launch load_profile_from_dir() with dir = %s", dir);
 #endif
-#ifdef SAFEMODE
 	if ((dir==NULL) || (profile==NULL)) return NULL;
-#endif
 	gchar *profile_path = g_strdup_printf("%s/%s", dir, profile);
-#ifdef SAFEMODE
 	if (profile_path && g_file_test(profile_path , G_FILE_TEST_EXISTS))
-#else
-	if ( g_file_test(profile_path , G_FILE_TEST_EXISTS))
-#endif
 		return profile_path;
 	else
 	{
@@ -1265,9 +1243,7 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 	g_debug("! Launch get_user_settings() with win_data = %p, encoding = %s",
 		win_data, encoding);
 #  endif
-#  ifdef SAFEMODE
 	if (win_data==NULL) return;
-#  endif
 
 	// g_debug("Get win_data = %d when get user settings!", win_data);
 
@@ -1839,14 +1815,10 @@ void get_user_settings(struct Window *win_data, const gchar *encoding)
 	win_data->default_row = row;
 
 	win_data->splited_page_names = split_string(win_data->page_names, " ", -1);
-#ifdef SAFEMODE
 	if (win_data->splited_page_names==NULL)
 		win_data->splited_page_names = g_strsplit("", " ", -1);
-#endif
 	win_data->max_page_names_no = 0;
-#ifdef SAFEMODE
 	if (win_data->splited_page_names)
-#endif
 		while (win_data->splited_page_names[win_data->max_page_names_no]!=NULL)
 			win_data->max_page_names_no++;
 
@@ -1996,9 +1968,7 @@ void init_prime_user_datas(struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch init_prime_user_datas() with win_data = %p!", win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	// g_debug("init_prime_user_datas(): win_data->prime_user_datas_inited = %d", win_data->prime_user_datas_inited);
 	if (win_data->prime_user_datas_inited) return;
 
@@ -2020,9 +1990,7 @@ void get_prime_user_settings(GKeyFile *keyfile, struct Window *win_data, gchar *
 	g_debug("! Launch get_prime_user_settings() with keyfile = %p, win_data = %p, encoding = %s!",
 		keyfile, win_data, encoding);
 #  endif
-#  ifdef SAFEMODE
 	if ((keyfile==NULL) || (win_data==NULL)) return;
-#  endif
 	if (win_data->prime_user_settings_inited) return;
 	win_data->prime_user_settings_inited = TRUE;
 
@@ -2044,11 +2012,7 @@ void get_prime_user_settings(GKeyFile *keyfile, struct Window *win_data, gchar *
 	win_data->default_locale = check_string_value(keyfile, "main", "default_locale",
 						      win_data->default_locale, TRUE, DISABLE_EMPTY_STR);
 	// g_debug("win_data->default_locale = %s", win_data->default_locale);
-#  ifdef SAFEMODE
 	if ( win_data->default_locale && (win_data->default_locale[0]!='\0'))
-#  else
-	if (win_data->default_locale[0]!='\0')
-#  endif
 	{
 		gchar *encoding = get_encoding_from_locale(win_data->default_locale);
 		if (encoding)
@@ -2074,9 +2038,7 @@ gboolean check_boolean_value(GKeyFile *keyfile, const gchar *group_name, const g
 	g_debug("! Launch check_boolean_value() with keyfile = %p, group_name = %s, key = %s, default_value = %d",
 		keyfile, group_name, key ,default_value);
 #  endif
-#  ifdef SAFEMODE
 	if ((keyfile==NULL) || (group_name==NULL) || (key==NULL)) return FALSE;
-#  endif
 	gchar *value = g_key_file_get_value(keyfile, group_name, key, NULL);
 	gboolean setting;
 
@@ -2104,9 +2066,7 @@ gdouble check_double_value(GKeyFile *keyfile, const gchar *group_name, const gch
 	g_debug("! Launch check_double_value() with keyfile = %p, group_name = %s, key = %s, default_value = %f",
 		keyfile, group_name, key, default_value);
 #  endif
-#  ifdef SAFEMODE
 	if ((keyfile==NULL) || (group_name==NULL) || (key==NULL)) return 0;
-#  endif
 	gchar *value = g_key_file_get_value(keyfile, group_name, key, NULL);
 	gdouble setting;
 
@@ -2157,9 +2117,7 @@ glong check_integer_value(GKeyFile *keyfile, const gchar *group_name, const gcha
 		keyfile, group_name, key, default_value, enable_empty, enable_zero,
 		check_min, min, check_max, max);
 #  endif
-#  ifdef SAFEMODE
 	if ((keyfile==NULL) || (group_name==NULL) || (key==NULL)) return 0;
-#  endif
 	gchar *value = g_key_file_get_value(keyfile, group_name, key, NULL);
 	gint setting;
 
@@ -2208,9 +2166,7 @@ gchar *check_string_value(GKeyFile *keyfile, const gchar *group_name, const gcha
 		"key = %s, original_value = %s (%p), enable_empty = %d",
 		keyfile, group_name, key, original_value, original_value, enable_empty);
 #  endif
-#  ifdef SAFEMODE
 	if ((keyfile==NULL) || (group_name==NULL) || (key==NULL)) return NULL;
-#  endif
 	gchar *setting = g_key_file_get_value(keyfile, group_name, key, NULL);
 	// g_debug("check_string_value() with setting = %s (%p)", setting, setting);
 	if (setting && (setting[0] == '\0') && (enable_empty==DISABLE_EMPTY_STR))
@@ -2238,9 +2194,7 @@ gboolean check_color_value(const gchar *key_name, const gchar *color_name, GdkRG
 	g_debug("! Launch check_color_value() with key_name = %s, color_name = %s, color = %p",
 		key_name, color_name, color);
 #endif
-#ifdef SAFEMODE
 	if (color_name==NULL) return FALSE;
-#endif
 	if ((color_name) && (color_name[0]!='\0'))
 	{
 		if (dirty_gdk_color_parse(color_name, color))
@@ -2279,9 +2233,7 @@ gboolean accelerator_parse (const gchar *key_name, const gchar *key_value, guint
 		g_debug("! Launch accelerator_parse() with key_name = %s, key_value = %s, key = (%p), mods = (%p)",
 			key_name, key_value, key, mods);
 #endif
-#ifdef SAFEMODE
 	if ((key_name==NULL) || (key_value==NULL)) return FALSE;
-#endif
 	// key_value example: "Ctrl+Shift Home"
 
 	gchar **values = NULL, **functions = NULL;
@@ -2304,10 +2256,8 @@ gboolean accelerator_parse (const gchar *key_name, const gchar *key_value, guint
 		{
 			functions = split_string(values[0], "+", -1);
 			// got the function key ("Ctrl+Shift" for example)
-#ifdef SAFEMODE
 			if (functions)
 			{
-#endif
 				while (functions[i]!=NULL)
 				{
 					for (j=0; j<MOD; j++)
@@ -2318,9 +2268,7 @@ gboolean accelerator_parse (const gchar *key_name, const gchar *key_value, guint
 					}
 					i++;
 				}
-#ifdef SAFEMODE
 			}
-#endif
 			// g_debug("masks = %x", tempmods);
 
 			// if (! tempmods )
@@ -2373,9 +2321,7 @@ gboolean accelerator_parse (const gchar *key_name, const gchar *key_value, guint
 	{
 		// NULL
 		// g_message("We Got a NULL Key (%s)!\n", key_value);
-#ifdef SAFEMODE
 		if ((key==NULL) || (mods==NULL)) goto FINISH;
-#endif
 		*key=GDK_KEY_VoidSymbol;
 		*mods=-1;
 		response = TRUE;
@@ -2399,9 +2345,7 @@ void create_save_failed_dialog(struct Window *win_data, gchar *message)
 #ifdef DETAIL
 	g_debug("! Launch create_save_failed_dialog() with win_data = %p, message = %s!", win_data, message);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 	GtkWidget *window = NULL;
 	if (win_data) window = win_data->window;
 
@@ -2429,17 +2373,9 @@ gchar *get_profile()
 	g_debug("! Launch get_profile()");
 #  endif
 	gchar *profile = g_strdup_printf("%s/%s", REAL_ETCDIR, PROFILE);
-#  ifdef SAFEMODE
 	if (profile && (g_mkdir_with_parents(profile_dir, 0700) < 0))
-#  else
-	if (g_mkdir_with_parents(profile_dir, 0700))
-#  endif
 	{
-#  ifdef SAFEMODE
 		g_message("Can NOT create the directory: %s", profile_dir);
-#  else
-		g_critical("Can NOT create the directory: %s", profile_dir);
-#  endif
 		g_free(profile);
 		profile = NULL;
 	}
@@ -2459,9 +2395,7 @@ void init_rgba(struct Window *win_data)
 	else
 		g_debug("! Launch init_rgba() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if ((win_data==NULL) || (win_data->window==NULL)) return;
-#endif
 	if (win_data->use_rgba < 0) return;
 
 	// g_debug("Get win_data = %d when initing rgba!", win_data);
@@ -2531,9 +2465,7 @@ void profile_is_invalid_dialog(GError *error, struct Window *win_data)
 #ifdef DETAIL
 	g_debug("! Launch profile_is_invalid_dialog() with win_data = %p", win_data);
 #endif
-#ifdef SAFEMODE
 	if ((error==NULL) || (win_data==NULL)) return;
-#endif
 	if (win_data->confirmed_profile_is_invalid) return;
 
 	gchar *err_msg;
@@ -2568,9 +2500,7 @@ void convert_string_to_user_key(gint i, gchar *value, struct Window *win_data)
 	g_debug("! Launch convert_string_to_user_key() with i = %d, value = %s (%p), win_data = %p!",
 		i, value, value, win_data);
 #endif
-#ifdef SAFEMODE
 	if (win_data==NULL) return;
-#endif
 
 	if (value)
 	{
@@ -2612,9 +2542,7 @@ void get_row_and_column_from_geometry_str(glong *column, glong *row, glong *defa
 		"default_column = %ld, default_row = %ld, geometry_str = %s",
 		*column, *row, *default_column, *default_row, geometry_str);
 #endif
-#ifdef SAFEMODE
 	if ((column==NULL) || (row==NULL) || (default_column==NULL) || (default_row==NULL)) return;
-#endif
 	if (geometry_str && (geometry_str[0]!='\0'))
 	{
 		gint offset_x = 0, offset_y = 0;

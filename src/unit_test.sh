@@ -85,7 +85,7 @@ if [ -z "$CHECK_INCLUDES" ]; then
 		$MAKE clean
 	fi
 	$MAKE uto || exit 1
-	INCLUDES="-DSAFEMODE -DFATAL -DUNIT_TEST"
+	INCLUDES="-DFATAL -DUNIT_TEST"
 fi
 
 PKGCONFIG=`whereis "pkg-config" | tr -s ' ' '\n' | grep "bin/""pkg-config""$" | head -n 1`
