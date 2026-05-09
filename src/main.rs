@@ -1,6 +1,6 @@
-use gdk::RGBA;
+use gdk::{Key, ModifierType, RGBA};
 use glib::{clone, debug, error};
-use gtk::{Application, ApplicationWindow, gdk, gio, glib};
+use gtk::{Application, ApplicationWindow, EventControllerKey, gdk, gio, glib};
 use pango::FontDescription;
 use std::ffi::CStr;
 use vte4::prelude::*;
@@ -12,6 +12,7 @@ const G_LOG_DOMAIN: &str = "Terminal";
 const FONT_FAMILY: &str = "Go Mono";
 const FONT_SIZE: i32 = 12;
 const BRIGHTNESS: f32 = -0.137;
+const SCALE_RATIO: f64 = 1.04;
 
 const LOGGER: glib::GlibLogger = glib::GlibLogger::new(
     glib::GlibLoggerFormat::Plain,
@@ -103,6 +104,52 @@ fn build_ui(app: &gtk::Application) {
     window.set_child(Some(&term));
 
     window.present();
+
+    let keyboard = EventControllerKey::new();
+    keyboard.set_propagation_phase(gtk::PropagationPhase::Capture);
+
+    {
+        let term = term.clone();
+        keyboard.connect_key_pressed(move |_, key, _keycode, modifiers| {
+            let k_ctrl = modifiers.contains(ModifierType::CONTROL_MASK);
+            let k_shift = modifiers.contains(ModifierType::SHIFT_MASK);
+
+            match (k_ctrl, k_shift, key) {
+                (true, false, Key::Return) => {
+                    term.set_font_scale(1.0);
+                    return glib::Propagation::Stop;
+                }
+                (true, _, Key::minus | Key::underscore) | (true, _, Key::equal | Key::plus) => {
+                    let mut ratio = if k_shift {
+                        (SCALE_RATIO - 1.0) / 2.0 + 1.0
+                    } else {
+                        SCALE_RATIO
+                    };
+                    match key {
+                        Key::minus | Key::underscore => {
+                            ratio = 1.0 / ratio;
+                        }
+                        _ => {}
+                    };
+                    term.set_font_scale(term.font_scale() * ratio);
+                    return glib::Propagation::Stop;
+                }
+                (true, true, Key::C) => {
+                    term.copy_clipboard_format(vte4::Format::Text);
+                    return glib::Propagation::Stop;
+                }
+                (true, true, Key::V) => {
+                    term.paste_clipboard();
+                    return glib::Propagation::Stop;
+                }
+                _ => {}
+            }
+
+            glib::Propagation::Proceed
+        });
+    }
+
+    window.add_controller(keyboard);
 
     // https://gnome.pages.gitlab.gnome.org/vte/gtk4/method.Terminal.spawn_async.html
     term.spawn_async(
