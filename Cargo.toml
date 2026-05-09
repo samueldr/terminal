@@ -4,4 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+glib = { version = "0.22.7", features = ["v2_74", "log_macros", "v2_86"] }
 gtk = { version = "0.11.3", package = "gtk4", features = ["v4_20"] }
+libc = "0.2.186"
+log = "0.4.29"
+pango = { version = "0.22.6", features = ["v1_57"] }
+vte4 = { version = "0.10.0", features = ["v0_82", "gtk_v4_18"] }

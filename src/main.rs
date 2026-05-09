@@ -1,3 +1,149 @@
-fn main() {
-    println!("Hello, world!");
+use gdk::RGBA;
+use glib::{clone, debug, error};
+use gtk::{Application, ApplicationWindow, gdk, gio, glib};
+use pango::FontDescription;
+use std::ffi::CStr;
+use vte4::prelude::*;
+
+const FALLBACK_SHELL: &str = "/bin/sh";
+const APP_ID: &str = "com.samueldr.terminal";
+const G_LOG_DOMAIN: &str = "Terminal";
+
+const FONT_FAMILY: &str = "Go Mono";
+const FONT_SIZE: i32 = 12;
+const BRIGHTNESS: f32 = -0.137;
+
+const LOGGER: glib::GlibLogger = glib::GlibLogger::new(
+    glib::GlibLoggerFormat::Plain,
+    glib::GlibLoggerDomain::CrateTarget,
+);
+
+fn main() -> glib::ExitCode {
+    log::set_logger(&LOGGER).expect("logger already set");
+    log::set_max_level(log::LevelFilter::Debug);
+
+    let app = Application::builder().application_id(APP_ID).build();
+    app.connect_activate(build_ui);
+
+    app.run()
+}
+
+fn get_shell() -> String {
+    unsafe {
+        let passwd = libc::getpwuid(libc::getuid());
+        let shell = CStr::from_ptr((*passwd).pw_shell).to_str();
+        if let Ok(shell) = shell
+            && !shell.is_empty()
+        {
+            return shell.to_string();
+        }
+    }
+
+    error!(
+        "Login shell could not be detected. Falling back to {:?}.",
+        FALLBACK_SHELL
+    );
+    FALLBACK_SHELL.to_string()
+}
+
+fn make_color(s: &str) -> RGBA {
+    let mut color = RGBA::parse(s).unwrap();
+    color.set_red(color.red() * (1.0 + BRIGHTNESS));
+    color.set_blue(color.blue() * (1.0 + BRIGHTNESS));
+    color.set_green(color.green() * (1.0 + BRIGHTNESS));
+    color
+}
+
+fn build_ui(app: &gtk::Application) {
+    let window = ApplicationWindow::builder()
+        .application(app)
+        .title("WIP terminal")
+        .build();
+
+    let mut font = FontDescription::new();
+    font.set_family(FONT_FAMILY);
+    font.set_size(pango::SCALE * FONT_SIZE);
+
+    let term = vte4::Terminal::builder()
+        .cursor_shape(vte4::CursorShape::Block)
+        .cursor_blink_mode(vte4::CursorBlinkMode::On)
+        .font_desc(&font)
+        .build();
+
+    let foreground = &RGBA::new(0.0, 0.0, 0.0, 1.0);
+    let background = &RGBA::new(1.0, 1.0, 1.0, 1.0);
+
+    // This is the Tango palette.
+    let mut palette = [
+        // NOTE: missing: "brightness" adjustment by -0.137 to each component.
+        &make_color("#2e2e34343636"),
+        &make_color("#cccc00000000"),
+        &make_color("#4e4e9a9a0606"),
+        &make_color("#c4c4a0a00000"),
+        &make_color("#34346565a4a4"),
+        &make_color("#757550507b7b"),
+        &make_color("#060698209a9a"),
+        &make_color("#d3d3d7d7cfcf"),
+        &make_color("#555557575353"),
+        &make_color("#efef29292929"),
+        &make_color("#8a8ae2e23434"),
+        &make_color("#fcfce9e94f4f"),
+        &make_color("#72729f9fcfcf"),
+        &make_color("#adad7f7fa8a8"),
+        &make_color("#3434e2e2e2e2"),
+        &make_color("#eeeeeeeeecec"),
+    ];
+
+    // Overwrite palette's "black" and "bright white" with background/foreground.
+    palette[0] = background;
+    palette[15] = foreground;
+
+    term.set_colors(Some(foreground), Some(background), &palette);
+
+    window.set_child(Some(&term));
+
+    window.present();
+
+    // https://gnome.pages.gitlab.gnome.org/vte/gtk4/method.Terminal.spawn_async.html
+    term.spawn_async(
+        vte4::PtyFlags::DEFAULT,
+        // Use CWD implicitly.
+        None,
+        &[get_shell().as_ref(), "-"],
+        &[],
+        // https://docs.gtk.org/glib/flags.SpawnFlags.html
+        glib::SpawnFlags::DEFAULT,
+        || (), // child_setup
+        -1,    // timeout
+        gio::Cancellable::NONE,
+        clone!(
+            #[weak]
+            window,
+            move |result| {
+                match result {
+                    Ok(pid) => {
+                        debug!("Terminal process PID: {:?}", pid);
+                    }
+                    Err(e) => {
+                        error!("Failed to spawn process...");
+                        error!("{:?}", e);
+                        window.close();
+                        // TODO: report this through the terminal window and wait for action?
+                        // I'd need a "framework" around that, if desirable.
+                    }
+                }
+            }
+        ),
+    );
+
+    term.connect_child_exited(clone!(
+        #[weak]
+        window,
+        move |term, status| {
+            debug!("Terminal child process exited...");
+            debug!("  Term: {:?}", term);
+            debug!("  Exited with status: {:?}", status);
+            window.close();
+        }
+    ));
 }
