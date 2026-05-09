@@ -1,13 +1,13 @@
+use crate::misc::{G_LOG_DOMAIN, get_shell};
 use gdk::{Key, ModifierType, RGBA};
 use glib::{clone, debug, error};
 use gtk::{Application, ApplicationWindow, EventControllerKey, gdk, gio, glib};
 use pango::FontDescription;
-use std::ffi::CStr;
 use vte4::prelude::*;
 
-const FALLBACK_SHELL: &str = "/bin/sh";
+mod misc;
+
 const APP_ID: &str = "com.samueldr.terminal";
-const G_LOG_DOMAIN: &str = "Terminal";
 
 const FONT_FAMILY: &str = "Go Mono";
 const FONT_SIZE: i32 = 12;
@@ -19,34 +19,6 @@ const LOGGER: glib::GlibLogger = glib::GlibLogger::new(
     glib::GlibLoggerDomain::CrateTarget,
 );
 
-fn main() -> glib::ExitCode {
-    log::set_logger(&LOGGER).expect("logger already set");
-    log::set_max_level(log::LevelFilter::Debug);
-
-    let app = Application::builder().application_id(APP_ID).build();
-    app.connect_activate(build_ui);
-
-    app.run()
-}
-
-fn get_shell() -> String {
-    unsafe {
-        let passwd = libc::getpwuid(libc::getuid());
-        let shell = CStr::from_ptr((*passwd).pw_shell).to_str();
-        if let Ok(shell) = shell
-            && !shell.is_empty()
-        {
-            return shell.to_string();
-        }
-    }
-
-    error!(
-        "Login shell could not be detected. Falling back to {:?}.",
-        FALLBACK_SHELL
-    );
-    FALLBACK_SHELL.to_string()
-}
-
 fn make_color(s: &str) -> RGBA {
     let mut color = RGBA::parse(s).unwrap();
     color.set_red(color.red() * (1.0 + BRIGHTNESS));
@@ -55,7 +27,7 @@ fn make_color(s: &str) -> RGBA {
     color
 }
 
-fn build_ui(app: &gtk::Application) {
+fn create_terminal(app: &gtk::Application) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("WIP terminal")
@@ -201,4 +173,18 @@ fn build_ui(app: &gtk::Application) {
             window.close();
         }
     ));
+}
+
+fn start(app: &gtk::Application) {
+    create_terminal(app);
+}
+
+fn main() -> glib::ExitCode {
+    log::set_logger(&LOGGER).expect("logger already set");
+    log::set_max_level(log::LevelFilter::Debug);
+
+    let app = Application::builder().application_id(APP_ID).build();
+    app.connect_activate(start);
+
+    app.run()
 }
