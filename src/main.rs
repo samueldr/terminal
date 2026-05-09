@@ -101,6 +101,14 @@ fn build_ui(app: &gtk::Application) {
 
     term.set_colors(Some(foreground), Some(background), &palette);
 
+    term.set_scrollback_lines(0);
+    term.set_audible_bell(false);
+
+    term.set_yalign(vte4::Align::Center);
+    term.set_xalign(vte4::Align::Center);
+    term.set_yfill(true);
+    term.set_xfill(true);
+
     window.set_child(Some(&term));
 
     window.present();
