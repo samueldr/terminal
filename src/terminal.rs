@@ -3,6 +3,7 @@ use gdk::{Key, ModifierType, RGBA};
 use glib::{clone, debug, error};
 use gtk::{ApplicationWindow, EventControllerKey, gdk, gio, glib};
 use pango::FontDescription;
+use std::path::PathBuf;
 use vte4::prelude::*;
 
 const FONT_FAMILY: &str = "Go Mono";
@@ -18,7 +19,7 @@ fn make_color(s: &str) -> RGBA {
     color
 }
 
-pub fn create(app: &gtk::Application) {
+pub fn create(app: &gtk::Application, cwd: PathBuf) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("WIP terminal")
@@ -125,8 +126,7 @@ pub fn create(app: &gtk::Application) {
     // https://gnome.pages.gitlab.gnome.org/vte/gtk4/method.Terminal.spawn_async.html
     term.spawn_async(
         vte4::PtyFlags::DEFAULT,
-        // Use CWD implicitly.
-        None,
+        Some(&cwd.clone().to_string_lossy()),
         &[get_shell().as_ref(), "-"],
         &[],
         // https://docs.gtk.org/glib/flags.SpawnFlags.html
@@ -140,6 +140,7 @@ pub fn create(app: &gtk::Application) {
             move |result| {
                 match result {
                     Ok(pid) => {
+                        debug!("Terminal CWD: {:?}", cwd);
                         debug!("Terminal process PID: {:?}", pid);
                     }
                     Err(e) => {
