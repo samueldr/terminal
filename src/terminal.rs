@@ -1,4 +1,4 @@
-use crate::misc::{G_LOG_DOMAIN, get_shell};
+use crate::misc::G_LOG_DOMAIN;
 use gdk::{Key, ModifierType, RGBA};
 use glib::{clone, debug, error};
 use gtk::{ApplicationWindow, EventControllerKey, gdk, gio, glib};
@@ -19,7 +19,7 @@ fn make_color(s: &str) -> RGBA {
     color
 }
 
-pub fn create(app: &gtk::Application, cwd: PathBuf, environ: Vec<String>) {
+pub fn create(app: &gtk::Application, cwd: PathBuf, environ: Vec<String>, cmd: Vec<String>) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("WIP terminal")
@@ -127,14 +127,17 @@ pub fn create(app: &gtk::Application, cwd: PathBuf, environ: Vec<String>) {
     term.spawn_async(
         vte4::PtyFlags::DEFAULT,
         Some(&cwd.clone().to_string_lossy()),
-        &[get_shell().as_ref(), "-"],
+        cmd.iter()
+            .map(String::as_str)
+            .collect::<Vec<&str>>()
+            .as_slice(),
         environ
             .iter()
             .map(String::as_str)
             .collect::<Vec<&str>>()
             .as_slice(),
         // https://docs.gtk.org/glib/flags.SpawnFlags.html
-        glib::SpawnFlags::DEFAULT,
+        glib::SpawnFlags::DEFAULT | glib::SpawnFlags::SEARCH_PATH_FROM_ENVP,
         || (), // child_setup
         -1,    // timeout
         gio::Cancellable::NONE,
