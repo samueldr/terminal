@@ -32,11 +32,14 @@ fn main() -> glib::ExitCode {
         }
 
         // Get the environment in a more idiomatic shape to shuttle around.
-        let environ: Vec<String> = cmdline
+        let mut environ: Vec<String> = cmdline
             .environ()
             .into_iter()
             .map(|s| s.into_string().expect("unexpectedly couldn't handle env."))
             .collect();
+
+        // Make sure `TERM` is valid for VTE.
+        environ.push("TERM=screen-256color".into());
 
         terminal::create(
             app,
