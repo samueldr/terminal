@@ -1,5 +1,4 @@
 use gtk::{Application, gio, glib};
-use std::path::PathBuf;
 use vte4::prelude::*;
 
 mod misc;
@@ -12,26 +11,41 @@ const LOGGER: glib::GlibLogger = glib::GlibLogger::new(
     glib::GlibLoggerDomain::CrateTarget,
 );
 
-fn start(app: &gtk::Application, cwd: PathBuf) {
-    terminal::create(app, cwd);
-}
-
 fn main() -> glib::ExitCode {
     log::set_logger(&LOGGER).expect("logger already set");
     log::set_max_level(log::LevelFilter::Debug);
 
     let app = Application::builder()
         .application_id(APP_ID)
-        .flags(gio::ApplicationFlags::HANDLES_COMMAND_LINE)
+        .flags(
+            gio::ApplicationFlags::HANDLES_COMMAND_LINE | gio::ApplicationFlags::SEND_ENVIRONMENT,
+        )
         .build();
 
-    // // We need the CWD from the remote instance...
-    // // https://developer.gnome.org/documentation/tutorials/application.html
-    // // ... otherwise new windows will be in the CWD from the initial start.
+    // We need the CWD from the remote instance...
+    // https://developer.gnome.org/documentation/tutorials/application.html
+    // ... otherwise new windows will be in the CWD from the initial start.
     app.connect_command_line(|app, cmdline| {
-        start(app, cmdline.cwd().expect("unexpectedly got no cwd."));
+        // Clear this environment.
+        // The VTE invocation will be the only place we manipulate the env.
+        unsafe {
+            std::env::vars().for_each(|(name, _)| std::env::remove_var(name));
+        }
 
-        glib::ExitCode::new(89)
+        // Get the environment in a more idiomatic shape to shuttle around.
+        let environ: Vec<String> = cmdline
+            .environ()
+            .into_iter()
+            .map(|s| s.into_string().expect("unexpectedly couldn't handle env."))
+            .collect();
+
+        terminal::create(
+            app,
+            cmdline.cwd().expect("unexpectedly got no cwd."),
+            environ,
+        );
+
+        glib::ExitCode::SUCCESS
     });
 
     app.run();

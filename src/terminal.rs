@@ -19,7 +19,7 @@ fn make_color(s: &str) -> RGBA {
     color
 }
 
-pub fn create(app: &gtk::Application, cwd: PathBuf) {
+pub fn create(app: &gtk::Application, cwd: PathBuf, environ: Vec<String>) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("WIP terminal")
@@ -128,7 +128,11 @@ pub fn create(app: &gtk::Application, cwd: PathBuf) {
         vte4::PtyFlags::DEFAULT,
         Some(&cwd.clone().to_string_lossy()),
         &[get_shell().as_ref(), "-"],
-        &[],
+        environ
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<&str>>()
+            .as_slice(),
         // https://docs.gtk.org/glib/flags.SpawnFlags.html
         glib::SpawnFlags::DEFAULT,
         || (), // child_setup
