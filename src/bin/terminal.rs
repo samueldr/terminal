@@ -1,8 +1,7 @@
 use gtk::{Application, gio, glib};
 use vte4::prelude::*;
 
-mod misc;
-mod terminal;
+use samueldr_terminal_ii::terminal;
 
 const APP_ID: &str = "com.samueldr.terminal";
 
