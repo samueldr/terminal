@@ -6,27 +6,23 @@
 , rust-analyzer
 , rustfmt
 
-# TODO: move into actual project package
-, pkg-config
-, gtk4
-, vte-gtk4
+, terminal
 }:
 
 mkShell {
   buildInputs = [
-    gtk4
-    vte-gtk4
-  ];
-
+  ]
+  ++ terminal.buildInputs
+  ;
   nativeBuildInputs = [
     cargo
     rustc
     clippy
     rust-analyzer
     rustfmt
-
-    pkg-config
-  ];
+  ]
+  ++ terminal.nativeBuildInputs
+  ;
 
   G_MESSAGES_DEBUG = "Terminal";
 }

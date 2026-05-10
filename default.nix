@@ -7,10 +7,21 @@
 , nix ? "nix"
 }:
 
-# This is not using `callPackage` so `override`* isn't exposed to the CLI.
-import ./support/nix/packages.nix {
-  inherit (pkgs) lib;
-  inherit
-    pkgs
+let
+  packages = 
+    # This is not using `callPackage` so `override`* isn't exposed to the CLI.
+    import ./support/nix/packages.nix {
+      inherit (pkgs) lib;
+      inherit
+        pkgs
+      ;
+    }
   ;
+in
+# Expose the main package...
+packages.terminal // {
+  # ... while allowing access to the packages attrset.
+  inherit packages;
+  # ... and the dev shell.
+  inherit (packages) dev-shell;
 }

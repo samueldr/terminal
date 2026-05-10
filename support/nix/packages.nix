@@ -22,6 +22,9 @@
       "packages"
       "self"
     ];
+
+    terminal = callPackage ./terminal.nix { };
+
     dev-shell = callPackage ./dev-shell.nix { };
 
     # Ref on the package set.
