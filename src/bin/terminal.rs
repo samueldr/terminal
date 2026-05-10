@@ -1,6 +1,8 @@
+use glib::debug;
 use gtk::{Application, gio, glib};
 use vte4::prelude::*;
 
+use samueldr_terminal_ii::misc::G_LOG_DOMAIN;
 use samueldr_terminal_ii::terminal;
 
 const APP_ID: &str = "com.samueldr.terminal";
@@ -14,8 +16,11 @@ fn main() -> glib::ExitCode {
     log::set_logger(&LOGGER).expect("logger already set");
     log::set_max_level(log::LevelFilter::Debug);
 
+    // The `TERMINAL_APPLICATION_ID` environment variable can be used for development purposes.
+    // Otherwise the application ID of the "production" terminal that might be in use will be found
+    // in the ambient environment, and will be used instead of a fresh dev build.
     let app = Application::builder()
-        .application_id(APP_ID)
+        .application_id(std::env::var("TERMINAL_APPLICATION_ID").unwrap_or(APP_ID.into()))
         .flags(
             gio::ApplicationFlags::HANDLES_COMMAND_LINE | gio::ApplicationFlags::SEND_ENVIRONMENT,
         )
@@ -25,6 +30,8 @@ fn main() -> glib::ExitCode {
     // https://developer.gnome.org/documentation/tutorials/application.html
     // ... otherwise new windows will be in the CWD from the initial start.
     app.connect_command_line(|app, cmdline| {
+        debug!("Application ID: {:?}", app.application_id());
+
         // Clear this environment.
         // The VTE invocation will be the only place we manipulate the env.
         unsafe {
