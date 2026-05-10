@@ -50,7 +50,5 @@ fn main() -> glib::ExitCode {
         glib::ExitCode::SUCCESS
     });
 
-    app.run();
-
-    glib::ExitCode::SUCCESS
+    app.run()
 }
